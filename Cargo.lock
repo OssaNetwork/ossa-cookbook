@@ -797,31 +797,12 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
 name = "const-serialize"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
-dependencies = [
- "const-serialize-macro 0.6.0",
- "serde",
-]
-
-[[package]]
-name = "const-serialize"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08259976d62c715c4826cb4a3d64a3a9e5c5f68f964ff6087319857f569f93a6"
 dependencies = [
- "const-serialize-macro 0.6.2",
+ "const-serialize-macro",
  "serde",
-]
-
-[[package]]
-name = "const-serialize-macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.104",
 ]
 
 [[package]]
@@ -1250,9 +1231,11 @@ dependencies = [
 
 [[package]]
 name = "dioxus"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60a247114500f1a78e87022defa8173de847accfada8e8809dfae23a118a580c"
 dependencies = [
+ "dioxus-cli-config",
  "dioxus-config-macro",
  "dioxus-core",
  "dioxus-core-macro",
@@ -1265,21 +1248,24 @@ dependencies = [
  "dioxus-logger",
  "dioxus-signals",
  "dioxus-web",
- "manganis 0.6.0",
+ "manganis",
+ "warnings",
 ]
 
 [[package]]
 name = "dioxus-cli-config"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cdd16948f1ffdb068dd9a64812158073a4250e2af4e98ea31fdac0312e6bce86"
 dependencies = [
  "wasm-bindgen",
 ]
 
 [[package]]
 name = "dioxus-config-macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75cbf582fbb1c32d34a1042ea675469065574109c95154468710a4d73ee98b49"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1287,8 +1273,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-core"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c03f451a119e47433c16e2d8eb5b15bf7d6e6734eb1a4c47574e6711dadff8d"
 dependencies = [
  "const_format",
  "dioxus-core-types",
@@ -1307,8 +1294,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-core-macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "105c954caaaedf8cd10f3d1ba576b01e18aa8d33ad435182125eefe488cf0064"
 dependencies = [
  "convert_case 0.6.0",
  "dioxus-rsx",
@@ -1319,16 +1307,18 @@ dependencies = [
 
 [[package]]
 name = "dioxus-core-types"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "91a82fccfa48574eb7aa183e297769540904694844598433a9eb55896ad9f93b"
 dependencies = [
  "once_cell",
 ]
 
 [[package]]
 name = "dioxus-desktop"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5275c023606e38ba2f37a85dbbba22ad098c0abc6c26beb42aa1f60112f1c9d4"
 dependencies = [
  "async-trait",
  "cocoa 0.25.0",
@@ -1375,8 +1365,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-devtools"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "712a7300f1e8181218187b03502044157eef04e0a25b518117c5ef9ae1096880"
 dependencies = [
  "dioxus-core",
  "dioxus-devtools-types",
@@ -1390,8 +1381,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-devtools-types"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f62434973c0c9c5a3bc42e9cd5e7070401c2062a437fb5528f318c3e42ebf4ff"
 dependencies = [
  "dioxus-core",
  "serde",
@@ -1399,8 +1391,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-document"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "802a2014d1662b6615eec0a275745822ee4fc66aacd9d0f2fb33d6c8da79b8f2"
 dependencies = [
  "dioxus-core",
  "dioxus-core-macro",
@@ -1417,8 +1410,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-fullstack"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe99b48a1348eec385b5c4bd3e80fd863b0d3b47257d34e2ddc58754dec5d128"
 dependencies = [
  "base64 0.22.1",
  "bytes",
@@ -1440,15 +1434,16 @@ dependencies = [
 [[package]]
 name = "dioxus-heroicons"
 version = "0.5.1"
-source = "git+https://github.com/jprider63/dioxus-heroicons.git?rev=0407484985665d5a4ebac3fec045170c18e447ed#0407484985665d5a4ebac3fec045170c18e447ed"
+source = "git+https://github.com/jprider63/dioxus-heroicons.git?rev=454275f44cff27306ddd55601129a495aeb8c92c#454275f44cff27306ddd55601129a495aeb8c92c"
 dependencies = [
  "dioxus",
 ]
 
 [[package]]
 name = "dioxus-history"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ae4e22616c698f35b60727313134955d885de2d32e83689258e586ebc9b7909"
 dependencies = [
  "dioxus-core",
  "tracing",
@@ -1456,8 +1451,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-hooks"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "948e2b3f20d9d4b2c300aaa60281b1755f3298684448920b27106da5841896d0"
 dependencies = [
  "dioxus-core",
  "dioxus-signals",
@@ -1472,8 +1468,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-html"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59c9a40e6fee20ce7990095492dedb6a753eebe05e67d28271a249de74dc796d"
 dependencies = [
  "async-trait",
  "dioxus-core",
@@ -1496,8 +1493,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-html-internal-macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43ba87b53688a2c9f619ecdf4b3b955bc1f08bd0570a80a0d626c405f6d14a76"
 dependencies = [
  "convert_case 0.6.0",
  "proc-macro2",
@@ -1507,8 +1505,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-interpreter-js"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "330707b10ca75cb0eb05f9e5f8d80217cd0d7e62116a8277ae363c1a09b57a22"
 dependencies = [
  "dioxus-core",
  "dioxus-core-types",
@@ -1526,8 +1525,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-lib"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5405b71aa9b8b0c3e0d22728f12f34217ca5277792bd315878cc6ecab7301b72"
 dependencies = [
  "dioxus-config-macro",
  "dioxus-core",
@@ -1538,12 +1538,14 @@ dependencies = [
  "dioxus-html",
  "dioxus-rsx",
  "dioxus-signals",
+ "warnings",
 ]
 
 [[package]]
 name = "dioxus-logger"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "545961e752f6c8bf59c274951b3c8b18a106db6ad2f9e2035b29e1f2a3e899b1"
 dependencies = [
  "console_error_panic_hook",
  "dioxus-cli-config",
@@ -1554,8 +1556,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-rsx"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3eb588e05800b5a7eb90b2f40fca5bbd7626e823fb5e1ba21e011de649b45aa1"
 dependencies = [
  "proc-macro2",
  "proc-macro2-diagnostics",
@@ -1565,8 +1568,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-signals"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10e032dbb3a2c0386ec8b8ee59bc20b5aeb67038147c855801237b45b13d72ac"
 dependencies = [
  "dioxus-core",
  "futures-channel",
@@ -1581,8 +1585,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-web"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7e7c12475c3d360058b8afe1b68eb6dfc9cbb7dcd760aed37c5f85c561c83ed1"
 dependencies = [
  "async-trait",
  "ciborium",
@@ -1613,7 +1618,7 @@ dependencies = [
 [[package]]
 name = "dioxus_markdown"
 version = "0.3.0-alpha.1"
-source = "git+https://github.com/jprider63/dioxus-markdown.git?rev=e72cea3f58ece80268241f1bc8b025c2b63d9324#e72cea3f58ece80268241f1bc8b025c2b63d9324"
+source = "git+https://github.com/jprider63/dioxus-markdown.git?rev=11fe6502896870bf328b4c6475aaf48112e83cdd#11fe6502896870bf328b4c6475aaf48112e83cdd"
 dependencies = [
  "dioxus",
  "pulldown-cmark",
@@ -1621,8 +1626,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus_server_macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "371a5b21989a06b53c5092e977b3f75d0e60a65a4c15a2aa1d07014c3b2dda97"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2253,8 +2259,9 @@ dependencies = [
 
 [[package]]
 name = "generational-box"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a673cf4fb0ea6a91aa86c08695756dfe875277a912cdbf33db9a9f62d47ed82b"
 dependencies = [
  "parking_lot",
  "tracing",
@@ -3183,8 +3190,9 @@ dependencies = [
 
 [[package]]
 name = "lazy-js-bundle"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e49596223b9d9d4947a14a25c142a6e7d8ab3f27eb3ade269d238bb8b5c267e2"
 
 [[package]]
 name = "lazy_static"
@@ -3325,34 +3333,13 @@ dependencies = [
 
 [[package]]
 name = "manganis"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
-dependencies = [
- "const-serialize 0.6.0",
- "manganis-core 0.6.0",
- "manganis-macro 0.6.0",
-]
-
-[[package]]
-name = "manganis"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "317af44b15e7605b85f04525449a3bb631753040156c9b318e6cba8a3ea4ef73"
 dependencies = [
- "const-serialize 0.6.2",
- "manganis-core 0.6.2",
- "manganis-macro 0.6.2",
-]
-
-[[package]]
-name = "manganis-core"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
-dependencies = [
- "const-serialize 0.6.0",
- "dioxus-cli-config",
- "dioxus-core-types",
- "serde",
+ "const-serialize",
+ "manganis-core",
+ "manganis-macro",
 ]
 
 [[package]]
@@ -3361,19 +3348,10 @@ version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c38bee65cc725b2bba23b5dbb290f57c8be8fadbe2043fb7e2ce73022ea06519"
 dependencies = [
- "const-serialize 0.6.2",
+ "const-serialize",
+ "dioxus-cli-config",
+ "dioxus-core-types",
  "serde",
-]
-
-[[package]]
-name = "manganis-macro"
-version = "0.6.0"
-source = "git+https://github.com/jprider63/dioxus.git?rev=cd3ff6d3644347163c249da8293a76db02044d03#cd3ff6d3644347163c249da8293a76db02044d03"
-dependencies = [
- "manganis-core 0.6.0",
- "proc-macro2",
- "quote",
- "syn 2.0.104",
 ]
 
 [[package]]
@@ -3383,7 +3361,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9f4f71310913c40174d9f0cfcbcb127dad0329ecdb3945678a120db22d3d065"
 dependencies = [
  "dunce",
- "manganis-core 0.6.2",
+ "manganis-core",
  "proc-macro2",
  "quote",
  "syn 2.0.104",
@@ -3693,8 +3671,7 @@ dependencies = [
 [[package]]
 name = "netwatch"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8901dbb408894af3df3fc51420ba0c6faf3a7d896077b797c39b7001e2f787bd"
+source = "git+https://github.com/jprider63/net-tools.git?rev=e84c5ae9dd97d88d06fa1b808405bddb8960a94b#e84c5ae9dd97d88d06fa1b808405bddb8960a94b"
 dependencies = [
  "atomic-waker",
  "bytes",
@@ -4138,7 +4115,7 @@ dependencies = [
  "futures",
  "im",
  "keyboard-types 0.8.1",
- "manganis 0.6.2",
+ "manganis",
  "ossa-core",
  "ossa-crdt",
  "ossa-dioxus",
@@ -4154,7 +4131,7 @@ dependencies = [
 [[package]]
 name = "ossa-core"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7#29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7"
 dependencies = [
  "async-recursion",
  "async-session-types",
@@ -4184,7 +4161,7 @@ dependencies = [
 [[package]]
 name = "ossa-crdt"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7#29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7"
 dependencies = [
  "im",
  "ossa-typeable",
@@ -4194,7 +4171,7 @@ dependencies = [
 [[package]]
 name = "ossa-dioxus"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7#29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7"
 dependencies = [
  "dioxus",
  "dioxus-desktop",
@@ -4206,7 +4183,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7#29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7"
 dependencies = [
  "im",
  "lazy_static",
@@ -4218,7 +4195,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable-derive"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7#29a4c54e1772f7b714d8f2da70fcdb8872f5b8f7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4551,8 +4528,7 @@ checksum = "22686f4785f02a4fcc856d3b3bb19bf6c8160d103f7a99cc258bddd0251dc7f2"
 [[package]]
 name = "portmapper"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62f1975debe62a70557e42b9ff9466e4890cf9d3d156d296408a711f1c5f642b"
+source = "git+https://github.com/jprider63/net-tools.git?rev=e84c5ae9dd97d88d06fa1b808405bddb8960a94b#e84c5ae9dd97d88d06fa1b808405bddb8960a94b"
 dependencies = [
  "base64 0.22.1",
  "bytes",

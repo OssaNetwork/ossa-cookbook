@@ -9,7 +9,7 @@ use dioxus_desktop::muda::{Menu, MenuId, MenuItem, PredefinedMenuItem, Submenu};
 use dioxus_desktop::use_muda_event_handler;
 // use dioxus_desktop::tao::menu::{AboutMetadata, MenuBar, MenuItem, MenuItemAttributes};
 use futures::StreamExt;
-use ossa_core::network::protocol::ecg_sync;
+use ossa_core::protocol::store_peer::ecg_sync;
 use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::ecg::v0::{Body, Header, HeaderId, OperationId};
 use ossa_core::store::ecg::{self, ECGBody, ECGHeader};
