@@ -3693,8 +3693,7 @@ dependencies = [
 [[package]]
 name = "netwatch"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8901dbb408894af3df3fc51420ba0c6faf3a7d896077b797c39b7001e2f787bd"
+source = "git+https://github.com/jprider63/net-tools.git?rev=e84c5ae9dd97d88d06fa1b808405bddb8960a94b#e84c5ae9dd97d88d06fa1b808405bddb8960a94b"
 dependencies = [
  "atomic-waker",
  "bytes",
@@ -4154,7 +4153,7 @@ dependencies = [
 [[package]]
 name = "ossa-core"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=89e59122fe5936cf2f5e188d3f14ebf15ae17c9c#89e59122fe5936cf2f5e188d3f14ebf15ae17c9c"
 dependencies = [
  "async-recursion",
  "async-session-types",
@@ -4184,7 +4183,7 @@ dependencies = [
 [[package]]
 name = "ossa-crdt"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=89e59122fe5936cf2f5e188d3f14ebf15ae17c9c#89e59122fe5936cf2f5e188d3f14ebf15ae17c9c"
 dependencies = [
  "im",
  "ossa-typeable",
@@ -4194,7 +4193,7 @@ dependencies = [
 [[package]]
 name = "ossa-dioxus"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=89e59122fe5936cf2f5e188d3f14ebf15ae17c9c#89e59122fe5936cf2f5e188d3f14ebf15ae17c9c"
 dependencies = [
  "dioxus",
  "dioxus-desktop",
@@ -4206,7 +4205,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=89e59122fe5936cf2f5e188d3f14ebf15ae17c9c#89e59122fe5936cf2f5e188d3f14ebf15ae17c9c"
 dependencies = [
  "im",
  "lazy_static",
@@ -4218,7 +4217,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable-derive"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=5130cd3f4709b94a7c68e16a7036635d7d8b5f02#5130cd3f4709b94a7c68e16a7036635d7d8b5f02"
+source = "git+https://github.com/jprider63/ossa.git?rev=89e59122fe5936cf2f5e188d3f14ebf15ae17c9c#89e59122fe5936cf2f5e188d3f14ebf15ae17c9c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4551,8 +4550,7 @@ checksum = "22686f4785f02a4fcc856d3b3bb19bf6c8160d103f7a99cc258bddd0251dc7f2"
 [[package]]
 name = "portmapper"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62f1975debe62a70557e42b9ff9466e4890cf9d3d156d296408a711f1c5f642b"
+source = "git+https://github.com/jprider63/net-tools.git?rev=e84c5ae9dd97d88d06fa1b808405bddb8960a94b#e84c5ae9dd97d88d06fa1b808405bddb8960a94b"
 dependencies = [
  "base64 0.22.1",
  "bytes",
