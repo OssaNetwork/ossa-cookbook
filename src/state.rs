@@ -1,6 +1,6 @@
 pub mod internal;
 
-use ossa_core::store::ecg::v0::{HeaderId, OperationId};
+use ossa_core::store::dag::v0::{HeaderId, OperationId};
 use ossa_core::util::Sha256Hash;
 use ossa_crdt::map::twopmap::TwoPMapOp;
 use ossa_crdt::{map::twopmap::TwoPMap, register::LWW, time::CausalState, CRDT};

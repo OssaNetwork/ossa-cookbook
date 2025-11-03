@@ -9,8 +9,10 @@ use dioxus_heroicons::{solid::Shape, Icon};
 use dioxus_markdown::Markdown;
 // TODO: Fix outline icons.
 
+use ossa_core::auth::group::Group;
+use ossa_core::auth::Permissions;
 use ossa_core::storage::memory::MemoryStorage;
-use ossa_core::store::ecg::v0::OperationId;
+use ossa_core::store::dag::v0::OperationId;
 use ossa_core::time::CausalTime;
 use ossa_crdt::map::twopmap::{TwoPMap, TwoPMapOp};
 use ossa_crdt::register::LWW;
@@ -87,7 +89,7 @@ impl SignalView {
 // pub fn layout(cx: Scope, state: Vec<UseStore<DefaultSetup, Cookbook>>) -> Element {
 pub fn layout(
     view: SignalView,
-    state: Signal<Vec<UseStore<DefaultSetup, Cookbook>>>,
+    state: Signal<Vec<UseStore<DefaultSetup, Permissions, Cookbook>>>,
     root_scope: ScopeId,
 ) -> Element {
     let v = view.read();
@@ -156,7 +158,7 @@ fn get_cookbook_store(
     mut view: SignalView,
     state: Signal<State>,
     cookbook_id: CookbookId,
-) -> Option<UseStore<DefaultSetup, Cookbook>> {
+) -> Option<UseStore<DefaultSetup, Permissions, Cookbook>> {
     let cookbook = state.with(|state| state.get(cookbook_id).cloned()); // TODO: Can we avoid this clone? Return a ref?
     if cookbook.is_none() {
         // Cookbook not found, so set no selection.
@@ -684,8 +686,9 @@ fn CookbookNewView(view: SignalView, state: Signal<State>, root_scope: ScopeId) 
             ),
             recipes: TwoPMap::new(),
         };
+        let permissions = Group::new(); // TODO: Set us as owner.
         let cookbook_store = new_store_in_scope(root_scope, |ossa| {
-            (*ossa).create_store(cookbook, MemoryStorage::new())
+            (*ossa).create_store(permissions, cookbook, MemoryStorage::new())
         })
         .unwrap();
 
@@ -805,7 +808,7 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
         let store_id = store_id.peek().parse().expect("TODO");
         debug!("Connecting to store: {:?}", store_id);
         let recipe_store = new_store_in_scope(root_scope, |ossa| {
-            ossa.connect_to_store::<Cookbook>(store_id)
+            ossa.connect_to_store::<Permissions, Cookbook>(store_id)
         })
         .expect("Failed to connect_to_store");
         let cookbook_id = state.len();

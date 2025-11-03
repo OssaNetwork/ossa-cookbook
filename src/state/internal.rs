@@ -1,4 +1,5 @@
-use ossa_core::store::ecg::v0::{HeaderId, OperationId};
+use ossa_core::auth::Permissions;
+use ossa_core::store::dag::v0::{HeaderId, OperationId};
 use ossa_core::time::{CausalTime, ConcretizeTime};
 use ossa_core::util::Sha256Hash;
 use ossa_crdt::map::twopmap::TwoPMapOp;
@@ -142,7 +143,7 @@ impl<Time: Ord + Clone> CRDT for Cookbook<Time> {
     }
 }
 
-pub type State = Vec<UseStore<DefaultSetup, Cookbook<Time>>>;
+pub type State = Vec<UseStore<DefaultSetup, Permissions, Cookbook<Time>>>;
 
 // impl<T, U> OperationFunctor<T, U> for RecipeOp<T> {
 //     type Target<Time> = RecipeOp<Time>;

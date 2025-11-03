@@ -9,10 +9,12 @@ use dioxus_desktop::muda::{Menu, MenuId, MenuItem, PredefinedMenuItem, Submenu};
 use dioxus_desktop::use_muda_event_handler;
 // use dioxus_desktop::tao::menu::{AboutMetadata, MenuBar, MenuItem, MenuItemAttributes};
 use futures::StreamExt;
+use ossa_core::auth::group::Group;
+use ossa_core::auth::Permissions;
 use ossa_core::protocol::store_peer::ecg_sync;
 use ossa_core::storage::memory::MemoryStorage;
-use ossa_core::store::ecg::v0::{Body, Header, HeaderId, OperationId};
-use ossa_core::store::ecg::{self, ECGBody, ECGHeader};
+use ossa_core::store::dag::v0::{Body, Header, HeaderId, OperationId};
+use ossa_core::store::dag::{self, DAGBody, DAGHeader};
 use ossa_core::time::{CausalTime, ConcretizeTime};
 use ossa_core::util::Sha256Hash;
 use ossa_core::{core::OssaType, Ossa, OssaConfig};
@@ -291,7 +293,7 @@ fn initial_demo_state() -> crate::state::internal::Cookbook<Time> {
         // image: vec![],
     };
     // TODO: We should receive this from create_store?
-    let ecg_state: ecg::State<Header<Sha256Hash>, LWW<Time, ()>> = ecg::State::new();
+    let ecg_state: dag::State<Header<Sha256Hash>, LWW<Time, ()>> = dag::State::new();
 
     let recipes = TwoPMap::new();
     let recipes = recipes.apply(&ecg_state, TwoPMap::insert(l.t(), recipe.clone()));
@@ -327,9 +329,10 @@ fn app() -> Element {
     // });
 
     // let ossa = use_context::<OssaProp<CookbookApplication>>().ossa;
+    let permissions = Group::new(); // TODO: Make us owner.
     let recipe_store = use_store(|ossa| {
         let init_st: Cookbook = initial_demo_state();
-        (*ossa).create_store::<Cookbook, _>(init_st, MemoryStorage::new())
+        (*ossa).create_store::<Permissions, Cookbook, _>(permissions, init_st, MemoryStorage::new())
     });
     let state = use_signal(|| {
         // let ossa: Ossa<CookbookApplication> = todo!();
