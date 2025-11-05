@@ -10,6 +10,7 @@ use dioxus_desktop::use_muda_event_handler;
 // use dioxus_desktop::tao::menu::{AboutMetadata, MenuBar, MenuItem, MenuItemAttributes};
 use futures::StreamExt;
 use ossa_core::auth::group::Group;
+use ossa_core::auth::identity::Identity;
 use ossa_core::auth::Permissions;
 use ossa_core::protocol::store_peer::ecg_sync;
 use ossa_core::storage::memory::MemoryStorage;
@@ -18,6 +19,7 @@ use ossa_core::store::dag::{self, DAGBody, DAGHeader};
 use ossa_core::time::{CausalTime, ConcretizeTime};
 use ossa_core::util::Sha256Hash;
 use ossa_core::{core::OssaType, Ossa, OssaConfig};
+use ossa_crdt::register::Const;
 use ossa_crdt::{map::twopmap::TwoPMap, register::LWW, time::LamportTimestamp, CRDT};
 use ossa_dioxus::{use_store, DefaultSetup, OssaProp};
 use serde::Serialize;
@@ -328,6 +330,12 @@ fn app() -> Element {
     //     initial_demo_state()
     // });
 
+    let identity = use_store(|ossa| {
+        let (keys, identity) = Identity::generate_identity();
+        todo!("pass in keys + identity to Ossa");
+        (*ossa).create_store::<Identity, Const<Time, ()>, _>(identity, Const::new(()), MemoryStorage::new())
+    });
+
     // let ossa = use_context::<OssaProp<CookbookApplication>>().ossa;
     let permissions = Group::new(); // TODO: Make us owner.
     let recipe_store = use_store(|ossa| {
@@ -345,7 +353,7 @@ fn app() -> Element {
     //     cookbooks: vec![recipe_store],
     // }; // JP: Include map from cookbook StoreIds to Cookbooks?
 
-    let mut view = SignalView::use_view(gui::layout::View::NoSelection);
+    let mut view = SignalView::use_view(gui::layout::View::NoSelection); // gui::layout::View::Login);
 
     use_muda_event_handler(move |event| {
         let menu_map = use_context::<MenuMap>();

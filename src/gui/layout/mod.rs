@@ -1,4 +1,5 @@
 pub mod cookbook;
+pub mod login;
 pub mod recipe;
 
 use std::net::SocketAddrV4;
@@ -20,6 +21,7 @@ use ossa_dioxus::{new_store_in_scope, DefaultSetup, OssaProp, UseStore};
 use tracing::{debug, error, warn};
 
 use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_form};
+use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
 use crate::state::{Cookbook, CookbookId, CookbookOp, Recipe, RecipeId, RecipeOp, State, Time};
 
@@ -94,7 +96,8 @@ pub fn layout(
 ) -> Element {
     let v = view.read();
     let r = match &*v {
-        View::Login => todo!(),
+        View::Login => rsx!(LoginView {
+        }),
         View::NoSelection => rsx!(NoSelectionView {
             view: view,
             state: state
