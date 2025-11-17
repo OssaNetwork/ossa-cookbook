@@ -9,13 +9,14 @@ use dioxus_desktop::muda::{Menu, MenuId, MenuItem, PredefinedMenuItem, Submenu};
 use dioxus_desktop::use_muda_event_handler;
 // use dioxus_desktop::tao::menu::{AboutMetadata, MenuBar, MenuItem, MenuItemAttributes};
 use futures::StreamExt;
-use ossa_core::auth::group::Group;
+use ossa_core::auth::group::{Group, Role};
 use ossa_core::auth::identity::Identity;
 use ossa_core::auth::Permissions;
 use ossa_core::protocol::store_peer::ecg_sync;
 use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::dag::v0::{Body, Header, HeaderId, OperationId};
 use ossa_core::store::dag::{self, DAGBody, DAGHeader};
+use ossa_core::store::StoreRef;
 use ossa_core::time::{CausalTime, ConcretizeTime};
 use ossa_core::util::Sha256Hash;
 use ossa_core::{core::OssaType, Ossa, OssaConfig};
@@ -254,11 +255,19 @@ fn main() {
     let c = dioxus_desktop::Config::new().with_window(w).with_menu(menu);
     // let ossa_prop = OssaProp::new(ossa);
     // dioxus_desktop::launch_with_props(app, ossa_prop, c);
+
+    // (*ossa).create_store::<Identity, Const<Time, ()>, _>(identity, Const::new(()), MemoryStorage::new())
+    // todo!("pass in keys + identity to Ossa");
+
     dioxus_desktop::launch::launch(
         app,
         vec![
             Box::new(move || {
-                let ossa: Ossa<DefaultSetup> = Ossa::start(ossa_config);
+                let (keys, identity) = Identity::generate_identity();
+                let mut ossa: Ossa<DefaultSetup> = Ossa::start(ossa_config, keys);
+                let identity_store_handle = ossa.create_store::<Identity, Const<Time, ()>, _>(identity, Const::new(()), MemoryStorage::new());
+                ossa.set_identity_store(identity_store_handle);
+                // todo!("Move identity_store_handle into store")
                 let ossa_prop = OssaProp::new(ossa);
                 Box::new(ossa_prop)
             }),
@@ -330,15 +339,15 @@ fn app() -> Element {
     //     initial_demo_state()
     // });
 
-    let identity = use_store(|ossa| {
-        let (keys, identity) = Identity::generate_identity();
-        todo!("pass in keys + identity to Ossa");
-        (*ossa).create_store::<Identity, Const<Time, ()>, _>(identity, Const::new(()), MemoryStorage::new())
-    });
+    // let identity_store = use_store(|ossa: &Ossa<DefaultSetup>| {
+    //     // TODO: Better way to set this?
+    //     ossa.identity_store().as_ref().expect("Identity store has not been set").clone()
+    // });
 
     // let ossa = use_context::<OssaProp<CookbookApplication>>().ossa;
-    let permissions = Group::new(); // TODO: Make us owner.
     let recipe_store = use_store(|ossa| {
+        let identity_id = ossa.identity_store().as_ref().expect("Identity store has not been set").store_id();
+        let permissions = Group::new(StoreRef::new(identity_id), Some(Role::Relay));
         let init_st: Cookbook = initial_demo_state();
         (*ossa).create_store::<Permissions, Cookbook, _>(permissions, init_st, MemoryStorage::new())
     });

@@ -10,10 +10,11 @@ use dioxus_heroicons::{solid::Shape, Icon};
 use dioxus_markdown::Markdown;
 // TODO: Fix outline icons.
 
-use ossa_core::auth::group::Group;
+use ossa_core::auth::group::{Group, Role};
 use ossa_core::auth::Permissions;
 use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::dag::v0::OperationId;
+use ossa_core::store::StoreRef;
 use ossa_core::time::CausalTime;
 use ossa_crdt::map::twopmap::{TwoPMap, TwoPMapOp};
 use ossa_crdt::register::LWW;
@@ -138,7 +139,31 @@ pub fn layout(
     rsx!(
         div {
             class: "wrapper",
-            { r }
+            nav {
+                class: "menubar drag",
+                div {
+                    class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
+                    Icon {
+                        class: "", // w-14 h-14",
+                        icon: Shape::Users, // Shape::UserPlus, // Shape::UserGroup,
+                    }
+                    span {
+                        class: "pl-2",
+                        "Share",
+                    }
+                }
+                div {
+                    class: "flex-none inline-flex aspect-square w-32px h-32px rounded-full shrink-0 grow-0 border items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
+                    Icon {
+                        class: "", // w-14 h-14",
+                        icon: Shape::User,
+                    }
+                }
+            }
+            div {
+                class: "content-wrapper",
+                { r }
+            }
         }
     )
 }
@@ -689,8 +714,9 @@ fn CookbookNewView(view: SignalView, state: Signal<State>, root_scope: ScopeId) 
             ),
             recipes: TwoPMap::new(),
         };
-        let permissions = Group::new(); // TODO: Set us as owner.
         let cookbook_store = new_store_in_scope(root_scope, |ossa| {
+            let identity_id = ossa.identity_store().as_ref().map(|s| s.store_id()).expect("Identity not set");
+            let permissions = Group::new(StoreRef::new(identity_id), Some(Role::Relay)); // TODO: Make us owner.
             (*ossa).create_store(permissions, cookbook, MemoryStorage::new())
         })
         .unwrap();

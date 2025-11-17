@@ -12,20 +12,29 @@
 }
 
 html, body {
-    @apply min-h-screen;
+    overscroll-behavior: none;
+    @apply /* bg-gray-50 */ min-h-screen;
 }
 
 body {
     overflow-x: hidden;
-    @apply /*bg-gray-50*/ bg-white text-gray-800 antialiased;
+    @apply bg-white text-gray-800 antialiased;
 }
 
 .wrapper {
-    @apply min-h-screen flex flex-auto flex-shrink-0;
+    @apply min-h-screen flex flex-col flex-auto flex-shrink-0;
+}
+
+.content-wrapper {
+    @apply flex flex-row;
+}
+
+.menubar {
+    @apply flex flex-row w-full bg-gray-50 border-b gap-4 pb-2 px-4; /* justify-around */
 }
 
 .sidebar {
-    @apply bg-gray-50 /*bg-white*/ fixed flex flex-col top-0 left-0 w-64 h-full border-r border-t;
+    @apply bg-gray-50 /*bg-white fixed*/ flex flex-col top-0 left-0 w-64 h-full border-r;
 }
 
 .sidebar-item {
@@ -37,7 +46,7 @@ body {
 }
 
 .content {
-    @apply ml-64 grow border-t;
+    @apply grow;
 }
 
 .recipe-card {
