@@ -364,9 +364,12 @@ fn CookbookRecipeView(
                     class: "text-xl font-bold",
                     "Instructions"
                 }
-                Markdown {
-                    class: use_signal(|| "instructions selectable".to_string()),
-                    content: "{recipe.instructions.value()}",
+                div {
+                    class: "instructions selectable",
+                    Markdown {
+                        src: "{recipe.instructions.value()}",
+                        preserve_html: false,
+                    }
                 }
             }
         }

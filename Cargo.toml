@@ -7,22 +7,23 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.3.10", features = ["derive"] }
-dioxus = {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
-dioxus-desktop = {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
-dioxus-heroicons = {git = "https://github.com/jprider63/dioxus-heroicons.git", rev="0407484985665d5a4ebac3fec045170c18e447ed"} # rev="454275f44cff27306ddd55601129a495aeb8c92c"}
-dioxus_markdown = {git = "https://github.com/jprider63/dioxus-markdown.git", rev="e72cea3f58ece80268241f1bc8b025c2b63d9324"}
+dioxus_components = "0.1.2"
+dioxus = { version = "0.7.1", features = ["web"] } # {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
+dioxus-desktop = { version = "0.7.1" } # {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
+dioxus-heroicons = {git = "https://github.com/jprider63/dioxus-heroicons.git", rev="07d1b709c41299bc29d52efca1f15c635fd4f6b0"} # rev="454275f44cff27306ddd55601129a495aeb8c92c"}
+dioxus-markdown = { git = "https://github.com/rambip/rust-web-markdown.git", rev = "80486b6853df7099eb6d75eac8ceee2019ecf151" } # {git = "https://github.com/jprider63/dioxus-markdown.git", rev="e72cea3f58ece80268241f1bc8b025c2b63d9324"}
 futures = "*"
 keyboard-types = "*"
 im = "15.1.0"
 manganis = "*"
-ossa-core = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
-ossa-crdt = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
-ossa-dioxus = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
-ossa-typeable = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58", features=["im"]}
-# ossa-core = {path="../ossa/ossa-core"}
-# ossa-crdt = {path="../ossa/ossa-crdt"} 
-# ossa-dioxus = {path="../ossa/ossa-dioxus"} 
-# ossa-typeable = {path="../ossa/ossa-typeable", features=["im"]}
+# ossa-core = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
+# ossa-crdt = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
+# ossa-dioxus = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58"}
+# ossa-typeable = {git = "https://github.com/jprider63/ossa.git", rev="f809646def4a8c7cd1f0adb01d6bca9e6e970d58", features=["im"]}
+ossa-core = {path="../ossa/ossa-core"}
+ossa-crdt = {path="../ossa/ossa-crdt"} 
+ossa-dioxus = {path="../ossa/ossa-dioxus"} 
+ossa-typeable = {path="../ossa/ossa-typeable", features=["im", "ed25519-dalek"]}
 serde = "*"
 tauri = "2.2.4"
 tracing = "*"
@@ -31,4 +32,16 @@ tracing-subscriber = "*"
 # tmp?
 tokio = {version="*", features=["rt","rt-multi-thread","net"]}
 tokio-util = {version="*", features=["codec"]}
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
 

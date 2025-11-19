@@ -3,6 +3,7 @@
 #![feature(map_try_insert)]
 
 use clap::Parser;
+use dioxus::core::current_scope_id;
 use dioxus::prelude::*;
 use dioxus_desktop::muda::accelerator::Accelerator;
 use dioxus_desktop::muda::{Menu, MenuId, MenuItem, PredefinedMenuItem, Submenu};
@@ -377,7 +378,7 @@ fn app() -> Element {
         }
     });
 
-    let root_scope = current_scope_id().expect("Failed to retrieve root scope");
+    let root_scope = current_scope_id();
     rsx! (
         head {
             style {{ include_str!("../dist/style.css") }}
