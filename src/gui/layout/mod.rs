@@ -42,6 +42,10 @@ pub(crate) enum View {
     Connections,
 }
 
+pub(crate) enum DialogView {
+    Share,
+}
+
 impl View {
     pub(crate) fn selected_cookbook(&self) -> Option<&CookbookId> {
         match self {
@@ -137,7 +141,8 @@ pub fn layout(
             root_scope,
         }),
     };
-    let mut open = use_signal(|| false);
+
+    let mut dialog_view: Signal<Option<DialogView>> = use_signal(|| None);
     rsx!(
         div {
             class: "wrapper",
@@ -145,7 +150,7 @@ pub fn layout(
                 class: "menubar drag",
                 div {
                     class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
-                    onclick: move |_e| {open.set(true)},
+                    onclick: move |_e| {dialog_view.set(Some(DialogView::Share))},
                     Icon {
                         class: "", // w-14 h-14",
                         icon: Shape::Users, // Shape::UserPlus, // Shape::UserGroup,
@@ -166,21 +171,22 @@ pub fn layout(
             div {
                 class: "content-wrapper",
                 { r }
-            }
-            AlertDialogRoot {
-                open: open(),
-                on_open_change: move |v| open.set(v),
-                AlertDialogContent {
-                    AlertDialogTitle { "Share recipe" }
-                    AlertDialogDescription { "TODO: Share this..." }
-                    AlertDialogActions {
-                        // AlertDialogCancel { "Cancel" }
-                        AlertDialogAction {
-                            on_click: move |_| warn!("TODO: Done clicked"),
-                            "Done"
-                        }
-                    }
-                }
+                DialogViewComponent { current_view: dialog_view }
+                // AlertDialogRoot {
+                //     open: open(),
+                //     on_open_change: move |v| open.set(v),
+                //     AlertDialogContent {
+                //         AlertDialogTitle { "Share recipe" }
+                //         AlertDialogDescription { "TODO: Share this..." }
+                //         AlertDialogActions {
+                //             // AlertDialogCancel { "Cancel" }
+                //             AlertDialogAction {
+                //                 on_click: move |_| warn!("TODO: Done clicked"),
+                //                 "Done"
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
     )
@@ -886,3 +892,45 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
         }
     )
 }
+
+#[component]
+fn DialogViewComponent(current_view: Signal<Option<DialogView>>) -> Element {
+    let current_view_read = current_view.read();
+    if let Some(selected_view) = &*current_view_read {
+        let dview = match selected_view {
+            DialogView::Share => rsx! {
+                div {
+                    h2 {
+                        "Share recipe"
+                    }
+                    "TODO..."
+                    div {
+                        onclick: move |_| {
+                            current_view.set(None);
+                        },
+                        "Done"
+                    }
+                }
+            },
+        };
+        rsx!{
+            div {
+                class: "dialog-overlay",
+                onclick: move |_| {
+                    current_view.set(None);
+                },
+                div {
+                    class: "dialog-content",
+                    onclick: move |e| {
+                        e.stop_propagation();
+                    },
+                    { dview }
+                }
+            }
+        }
+    } else {
+        rsx!()
+    }
+
+}
+
