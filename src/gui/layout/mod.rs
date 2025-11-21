@@ -21,6 +21,7 @@ use ossa_crdt::register::LWW;
 use ossa_dioxus::{new_store_in_scope, DefaultSetup, OssaProp, UseStore};
 use tracing::{debug, error, warn};
 
+use crate::components::alert_dialog::{AlertDialogAction, AlertDialogActions, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogRoot, AlertDialogTitle};
 use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_form};
 use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
@@ -136,6 +137,7 @@ pub fn layout(
             root_scope,
         }),
     };
+    let mut open = use_signal(|| false);
     rsx!(
         div {
             class: "wrapper",
@@ -143,6 +145,7 @@ pub fn layout(
                 class: "menubar drag",
                 div {
                     class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
+                    onclick: move |_e| {open.set(true)},
                     Icon {
                         class: "", // w-14 h-14",
                         icon: Shape::Users, // Shape::UserPlus, // Shape::UserGroup,
@@ -163,6 +166,21 @@ pub fn layout(
             div {
                 class: "content-wrapper",
                 { r }
+            }
+            AlertDialogRoot {
+                open: open(),
+                on_open_change: move |v| open.set(v),
+                AlertDialogContent {
+                    AlertDialogTitle { "Share recipe" }
+                    AlertDialogDescription { "TODO: Share this..." }
+                    AlertDialogActions {
+                        // AlertDialogCancel { "Cancel" }
+                        AlertDialogAction {
+                            on_click: move |_| warn!("TODO: Done clicked"),
+                            "Done"
+                        }
+                    }
+                }
             }
         }
     )

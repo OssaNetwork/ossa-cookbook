@@ -38,6 +38,7 @@ use crate::gui::layout::SignalView;
 use crate::state::*;
 
 mod cli;
+mod components;
 mod gui;
 mod state;
 
@@ -380,13 +381,7 @@ fn app() -> Element {
 
     let root_scope = current_scope_id();
     rsx! (
-        head {
-            style {{ include_str!("../dist/style.css") }}
-            // link {
-            //     rel: "stylesheet",
-            //     href: { manganis::mg!(file("/dist/style.css")) }
-            // }
-        }
+        document::Link { rel: "stylesheet", href: asset!("../dist/style.css") }
 
         gui::layout::layout { view, state, root_scope }
     )

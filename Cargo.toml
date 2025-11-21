@@ -10,7 +10,7 @@ clap = { version = "4.3.10", features = ["derive"] }
 dioxus_components = "0.1.2"
 dioxus = { version = "0.7.1", features = ["web"] } # {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
 dioxus-desktop = { version = "0.7.1" } # {git = "https://github.com/jprider63/dioxus.git", rev="cd3ff6d3644347163c249da8293a76db02044d03"} # {version = "0.6.3"}
-dioxus-heroicons = {git = "https://github.com/jprider63/dioxus-heroicons.git", rev="07d1b709c41299bc29d52efca1f15c635fd4f6b0"} # rev="454275f44cff27306ddd55601129a495aeb8c92c"}
+dioxus-heroicons = {git = "https://github.com/jprider63/dioxus-heroicons.git", rev="12e25cfaa2c648e3b5197c725dfdf50f317e4ec5"} # rev="454275f44cff27306ddd55601129a495aeb8c92c"}
 dioxus-markdown = { git = "https://github.com/rambip/rust-web-markdown.git", rev = "80486b6853df7099eb6d75eac8ceee2019ecf151" } # {git = "https://github.com/jprider63/dioxus-markdown.git", rev="e72cea3f58ece80268241f1bc8b025c2b63d9324"}
 futures = "*"
 keyboard-types = "*"
@@ -32,6 +32,7 @@ tracing-subscriber = "*"
 # tmp?
 tokio = {version="*", features=["rt","rt-multi-thread","net"]}
 tokio-util = {version="*", features=["codec"]}
+dioxus-primitives = { git = "https://github.com/DioxusLabs/components", version = "0.0.1", default-features = false }
 
 [profile]
 
