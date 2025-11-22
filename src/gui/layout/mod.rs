@@ -143,6 +143,7 @@ pub fn layout(
     };
 
     let mut dialog_view: Signal<Option<DialogView>> = use_signal(|| None);
+    let mut open = use_signal(|| true);
     rsx!(
         div {
             class: "wrapper",
@@ -899,19 +900,25 @@ fn DialogViewComponent(current_view: Signal<Option<DialogView>>) -> Element {
     if let Some(selected_view) = &*current_view_read {
         let dview = match selected_view {
             DialogView::Share => rsx! {
-                div {
-                    h2 {
-                        "Share recipe"
-                    }
+                h2 {
+                    class: "m-0 text-xl font-bold",
+                    "Share recipe"
+                }
+                p {
+                    class: "m-0",
                     "TODO..."
+                }
+                div {
+                    class: "dialog-actions",
                     div {
+                        class: "dialog-action",
                         onclick: move |_| {
                             current_view.set(None);
                         },
                         "Done"
                     }
                 }
-            },
+            }
         };
         rsx!{
             div {

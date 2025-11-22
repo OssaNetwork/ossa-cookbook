@@ -91,6 +91,18 @@ body {
     inset: 0;
 }
 
+.dialog-action {
+  padding: 8px 18px;
+  border: 1px solid;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+.dialog-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+}
+
 .dialog-content {
   position: absolute;
   z-index: 1001;
@@ -116,5 +128,17 @@ body {
   gap: 16px;
   text-align: center;
   transform: translate(-50%, -50%);
+}
+
+@media (width >= 40rem) {
+  .dialog-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .dialog-content {
+    max-width: 32rem;
+    text-align: left;
+  }
 }
 
