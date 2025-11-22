@@ -199,7 +199,7 @@ fn NoSelectionView(view: SignalView, state: Signal<State>) -> Element {
         div {
             class: "content",
             div {
-                class: "flex justify-center items-center h-screen",
+                class: "flex justify-center items-center h-full",
                 "No selection" // No selection. | New cookbook | | New meal planner |
             }
         }
@@ -295,7 +295,7 @@ fn CookbookView(view: SignalView, state: Signal<State>, cookbook_id: CookbookId)
             div {
                 class: "content",
                 div {
-                    class: "flex justify-center items-center h-screen",
+                    class: "flex justify-center items-center h-full",
                     "Downloading..."
                 }
             }
@@ -318,7 +318,7 @@ fn CookbookRecipeView(
             div {
                 class: "content",
                 div {
-                    class: "flex justify-center items-center h-screen",
+                    class: "flex justify-center items-center h-full",
                     "Loading..."
                 }
             }

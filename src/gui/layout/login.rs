@@ -5,7 +5,7 @@ use dioxus::prelude::*;
 pub fn LoginView() -> Element {
     rsx! (
         div {
-            class: "flex flex-col justify-center items-center w-full h-screen gap-7",
+            class: "flex flex-col justify-center items-center w-full h-full gap-7",
             h1 {
                 class: "text-2xl font-bold",
                 "Identities"
