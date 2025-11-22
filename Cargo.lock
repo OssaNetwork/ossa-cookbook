@@ -1569,8 +1569,9 @@ dependencies = [
 
 [[package]]
 name = "dioxus-heroicons"
-version = "0.4.0"
-source = "git+https://github.com/jprider63/dioxus-heroicons.git?rev=12e25cfaa2c648e3b5197c725dfdf50f317e4ec5#12e25cfaa2c648e3b5197c725dfdf50f317e4ec5"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "36ebade685ae8ec7c41aa932400d0d9cb0ccee15fc31f54b09bc3c9c153d1342"
 dependencies = [
  "dioxus",
 ]
