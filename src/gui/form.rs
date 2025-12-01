@@ -1,4 +1,4 @@
-use dioxus::prelude::*;
+use dioxus::{core::AttributeValue, prelude::*};
 
 #[derive(Props, Clone, PartialEq)]
 pub struct FieldLabelProps {
@@ -60,4 +60,60 @@ pub fn TextField(props: TextFieldProps) -> Element {
             }
         )) }
     )
+}
+
+fn is_disabled(attributes: &[Attribute]) -> bool {
+    // println!("*** is_disabled ***");
+    for attr in attributes {
+        if attr.name == "disabled" {
+            if let AttributeValue::Bool(b) = attr.value {
+                return b;
+            }
+        }
+    }
+
+    false
+}
+
+#[component]
+pub fn Button(
+    #[props(extends=GlobalAttributes)]
+    #[props(extends=button)]
+    attributes: Vec<Attribute>,
+    onclick: Option<EventHandler<MouseEvent>>,
+    onmousedown: Option<EventHandler<MouseEvent>>,
+    onmouseup: Option<EventHandler<MouseEvent>>,
+    children: Element,
+) -> Element {
+    let disabled = is_disabled(&attributes);
+    rsx! {
+        button {
+            onclick: move |event| {
+                // println!("onclick!");
+                if let Some(f) = &onclick {
+                    if !disabled {
+                        f.call(event);
+                    } else {
+                        // println!("Disabled!");
+                    }
+                }
+            },
+            onmousedown: move |event| {
+                if let Some(f) = &onmousedown {
+                    if !disabled {
+                        f.call(event);
+                    }
+                }
+            },
+            onmouseup: move |event| {
+                if let Some(f) = &onmouseup {
+                    if !disabled {
+                        f.call(event);
+                    }
+                }
+            },
+            ..attributes,
+            {children}
+        }
+    }
 }

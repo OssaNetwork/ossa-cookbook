@@ -1,6 +1,7 @@
 pub mod cookbook;
 pub mod login;
 pub mod recipe;
+pub mod share;
 
 use std::net::SocketAddrV4;
 
@@ -22,9 +23,11 @@ use ossa_dioxus::{new_store_in_scope, DefaultSetup, OssaProp, UseStore};
 use tracing::{debug, error, warn};
 
 use crate::components::alert_dialog::{AlertDialogAction, AlertDialogActions, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogRoot, AlertDialogTitle};
+use crate::gui::form::Button;
 use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_form};
 use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
+use crate::gui::layout::share::form::share_form;
 use crate::state::{Cookbook, CookbookId, CookbookOp, Recipe, RecipeId, RecipeOp, State, Time};
 
 use crate::{use_store, MenuMap, MenuOperation};
@@ -42,7 +45,7 @@ pub(crate) enum View {
     Connections,
 }
 
-pub(crate) enum DialogView {
+pub(crate) enum OverlayView {
     Share,
 }
 
@@ -90,6 +93,19 @@ impl SignalView {
 
     pub(crate) fn read(&self) -> ReadableRef<Signal<View>> {
         self.0.read()
+    }
+}
+
+fn is_any_cookbook_selected(view: ReadableRef<Signal<View>>) -> bool {
+    match *view {
+        View::Login => false,
+        View::NoSelection => false,
+        View::CookbookNew => false,
+        View::Cookbook(_) => true,
+        View::CookbookRecipe(_, _) => true,
+        View::CookbookRecipeNew(_) => true,
+        View::CookbookRecipeEdit(_, _) => true,
+        View::Connections => false,
     }
 }
 
@@ -142,16 +158,17 @@ pub fn layout(
         }),
     };
 
-    let mut dialog_view: Signal<Option<DialogView>> = use_signal(|| None);
-    let mut open = use_signal(|| true);
+    let mut dialog_view: Signal<Option<OverlayView>> = use_signal(|| None);
+    // let mut open = use_signal(|| true);
     rsx!(
         div {
             class: "wrapper",
             nav {
                 class: "menubar drag",
-                div {
-                    class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
-                    onclick: move |_e| {dialog_view.set(Some(DialogView::Share))},
+                Button {
+                    disabled: !is_any_cookbook_selected(v),
+                    class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 disabled:opacity-0",
+                    onclick: move |_e| {dialog_view.set(Some(OverlayView::Share))},
                     Icon {
                         class: "", // w-14 h-14",
                         icon: Shape::Users, // Shape::UserPlus, // Shape::UserGroup,
@@ -172,7 +189,7 @@ pub fn layout(
             div {
                 class: "content-wrapper",
                 { r }
-                DialogViewComponent { current_view: dialog_view }
+                OverlayViewComponent { current_view: dialog_view }
                 // AlertDialogRoot {
                 //     open: open(),
                 //     on_open_change: move |v| open.set(v),
@@ -895,11 +912,14 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
 }
 
 #[component]
-fn DialogViewComponent(current_view: Signal<Option<DialogView>>) -> Element {
+fn OverlayViewComponent(current_view: Signal<Option<OverlayView>>) -> Element {
     let current_view_read = current_view.read();
+
+    let (add_form, added_identity) = share_form();
+
     if let Some(selected_view) = &*current_view_read {
         let dview = match selected_view {
-            DialogView::Share => rsx! {
+            OverlayView::Share => rsx! {
                 h2 {
                     class: "m-0 text-xl font-bold",
                     "Share recipe"
@@ -907,6 +927,10 @@ fn DialogViewComponent(current_view: Signal<Option<DialogView>>) -> Element {
                 p {
                     class: "m-0",
                     "TODO..."
+                }
+                div {
+                    class: "m-0 flex gap-2",
+                    { add_form }
                 }
                 div {
                     class: "dialog-actions",
