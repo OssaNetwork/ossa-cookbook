@@ -4,6 +4,7 @@ pub mod recipe;
 pub mod share;
 
 use std::net::SocketAddrV4;
+use std::ops::Deref;
 
 use dioxus::events::MouseEvent;
 use dioxus::prelude::*;
@@ -28,9 +29,7 @@ use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_f
 use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
 use crate::gui::layout::share::form::share_form;
-use crate::state::{Cookbook, CookbookId, CookbookOp, Recipe, RecipeId, RecipeOp, State, Time};
-
-use crate::{use_store, MenuMap, MenuOperation};
+use crate::state::{Cookbook, CookbookId, CookbookOp, Recipe, RecipeId, RecipeOp, State};
 
 const RECIPE_ICON: Asset = asset!("/img/recipe_icon.svg");
 
@@ -46,7 +45,7 @@ pub(crate) enum View {
 }
 
 pub(crate) enum OverlayView {
-    Share,
+    Share(CookbookId),
 }
 
 impl View {
@@ -96,16 +95,17 @@ impl SignalView {
     }
 }
 
-fn is_any_cookbook_selected(view: ReadableRef<Signal<View>>) -> bool {
+// If a cookbook is selected, return its id.
+fn is_any_cookbook_selected(view: ReadableRef<Signal<View>>) -> Option<CookbookId> {
     match *view {
-        View::Login => false,
-        View::NoSelection => false,
-        View::CookbookNew => false,
-        View::Cookbook(_) => true,
-        View::CookbookRecipe(_, _) => true,
-        View::CookbookRecipeNew(_) => true,
-        View::CookbookRecipeEdit(_, _) => true,
-        View::Connections => false,
+        View::Login => None,
+        View::NoSelection => None,
+        View::CookbookNew => None,
+        View::Cookbook(cid) => Some(cid),
+        View::CookbookRecipe(cid, _) => Some(cid),
+        View::CookbookRecipeNew(cid) => Some(cid),
+        View::CookbookRecipeEdit(cid, _) => Some(cid),
+        View::Connections => None,
     }
 }
 
@@ -133,7 +133,7 @@ pub fn layout(
             view: view,
             state: state,
             cookbook_id: *cookbookid,
-            recipe_id: recipeid.clone()
+            recipe_id: *recipeid,
         }),
         View::CookbookRecipeNew(cookbookid) => rsx!(CookbookRecipeNewView {
             view: view,
@@ -144,7 +144,7 @@ pub fn layout(
             view,
             state,
             cookbook_id: *cookbookid,
-            recipe_id: recipeid.clone()
+            recipe_id: *recipeid,
         }),
         View::Connections => rsx!(ConnectsView {
             view,
@@ -160,18 +160,22 @@ pub fn layout(
 
     let mut dialog_view: Signal<Option<OverlayView>> = use_signal(|| None);
     // let mut open = use_signal(|| true);
+    let selected_cookbook_id_m = is_any_cookbook_selected(v);
     rsx!(
         div {
             class: "wrapper",
             nav {
                 class: "menubar drag",
                 Button {
-                    disabled: !is_any_cookbook_selected(v),
+                    disabled: selected_cookbook_id_m.is_none(),
                     class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 disabled:opacity-0",
-                    onclick: move |_e| {dialog_view.set(Some(OverlayView::Share))},
+                    onclick: move |_e| {
+                        let selected_cookbook_id = selected_cookbook_id_m.expect("Invariant violated: Cookbook must be selected.");
+                        dialog_view.set(Some(OverlayView::Share(selected_cookbook_id)));
+                    },
                     Icon {
                         class: "", // w-14 h-14",
-                        icon: Shape::Users, // Shape::UserPlus, // Shape::UserGroup,
+                        icon: Shape::UserPlus, // Shape::Users, // Shape::UserGroup,
                     }
                     span {
                         class: "pl-2",
@@ -189,7 +193,10 @@ pub fn layout(
             div {
                 class: "content-wrapper",
                 { r }
-                OverlayViewComponent { current_view: dialog_view }
+                OverlayViewComponent {
+                    current_view: dialog_view,
+                    state,
+                }
                 // AlertDialogRoot {
                 //     open: open(),
                 //     on_open_change: move |v| open.set(v),
@@ -225,11 +232,18 @@ fn NoSelectionView(view: SignalView, state: Signal<State>) -> Element {
 }
 
 fn get_cookbook_store(
+    state: Signal<State>,
+    cookbook_id: CookbookId,
+) -> Option<UseStore<DefaultSetup, Permissions, Cookbook>> {
+    state.with(|state| state.get(cookbook_id).cloned()) // TODO: Can we avoid this clone? Return a ref?
+}
+
+fn get_cookbook_store_or_redirect(
     mut view: SignalView,
     state: Signal<State>,
     cookbook_id: CookbookId,
 ) -> Option<UseStore<DefaultSetup, Permissions, Cookbook>> {
-    let cookbook = state.with(|state| state.get(cookbook_id).cloned()); // TODO: Can we avoid this clone? Return a ref?
+    let cookbook = get_cookbook_store(state, cookbook_id);
     if cookbook.is_none() {
         // Cookbook not found, so set no selection.
         // TODO: Log this and display error.
@@ -254,7 +268,7 @@ fn get_recipe(mut view: SignalView, cookbook: &Cookbook, recipe_id: RecipeId) ->
 
 #[component]
 fn CookbookView(view: SignalView, state: Signal<State>, cookbook_id: CookbookId) -> Element {
-    let cookbook_store = get_cookbook_store(view, state, cookbook_id).expect("TODO"); // ?;
+    let cookbook_store = get_cookbook_store_or_redirect(view, state, cookbook_id).expect("TODO"); // ?;
     if let Some(cookbook) = cookbook_store.get_current_state() {
         let pills = cookbook.recipes.iter().map(|(recipe_id, recipe)| {
             rsx!(
@@ -328,7 +342,7 @@ fn CookbookRecipeView(
     cookbook_id: CookbookId,
     recipe_id: RecipeId,
 ) -> Element {
-    let cookbook_store = get_cookbook_store(view, state, cookbook_id).expect("TODO"); // ?;
+    let cookbook_store = get_cookbook_store_or_redirect(view, state, cookbook_id).expect("TODO"); // ?;
     let cookbook = cookbook_store.get_current_state().expect("TODO"); // ?;
     let Some(recipe) = get_recipe(view, &cookbook, recipe_id) else {
         return rsx!(
@@ -424,7 +438,7 @@ fn CookbookRecipeNewView(
     state: Signal<State>,
     cookbook_id: CookbookId,
 ) -> Element {
-    let cookbook_store = get_cookbook_store(view, state, cookbook_id).expect("TODO"); // ?;
+    let cookbook_store = get_cookbook_store_or_redirect(view, state, cookbook_id).expect("TODO"); // ?;
 
     let (form, form_state) = recipe_form(None);
 
@@ -500,11 +514,12 @@ fn CookbookRecipeEditView(
     cookbook_id: CookbookId,
     recipe_id: RecipeId,
 ) -> Element {
-    let mut cookbook_store = get_cookbook_store(view, state, cookbook_id).expect("TODO"); // ?;
-    let cookbook_store_state = cookbook_store.get_current_store_state().expect("TODO"); // ?;
-    let old_cookbook = cookbook_store_state.state();
+    let mut cookbook_store = get_cookbook_store_or_redirect(view, state, cookbook_id).expect("TODO"); // ?;
+    // let cookbook_store_state = cookbook_store.get_current_store_state().expect("TODO"); // ?;
+    // let old_cookbook = cookbook_store_state.ec_state();
+    let old_cookbook = cookbook_store.get_current_state().expect("TODO"); // ?;
 
-    let old_recipe = get_recipe(view, old_cookbook, recipe_id).expect("TODO"); // ?;
+    let old_recipe = get_recipe(view, &old_cookbook, recipe_id).expect("TODO"); // ?;
 
     let old_recipe = old_recipe.clone();
     let (form, form_state) = recipe_form(Some(&old_recipe));
@@ -912,25 +927,46 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
 }
 
 #[component]
-fn OverlayViewComponent(current_view: Signal<Option<OverlayView>>) -> Element {
-    let current_view_read = current_view.read();
+fn ShareCookbookOverlayView(
+    current_view: Signal<Option<OverlayView>>,
+    state: Signal<State>,
+    cookbook_id: CookbookId,
+) -> Element {
+    let Some(cookbook_store) = get_cookbook_store(state, cookbook_id) else {
+        error!("Cookbook {} not found.", cookbook_id);
 
-    let (add_form, added_identity) = share_form();
-
-    if let Some(selected_view) = &*current_view_read {
-        let dview = match selected_view {
-            OverlayView::Share => rsx! {
+        current_view.set(None);
+        return rsx!();
+    };
+    let cookbook_store_m = cookbook_store.get_current_store_state();
+    match cookbook_store_m.deref() {
+        Some(cookbook_store) => {
+        // if let Some(cookbook_store) = cookbook_store.get_current_store_state().deref() {
+            
+            let (add_form, added_identity) = share_form();
+            rsx! {
                 h2 {
-                    class: "m-0 text-xl font-bold",
-                    "Share recipe"
+                    class: "m-0 text-xl font-bold center",
+                    "Share cookbook \"{cookbook_store.state().title.value()}\""
                 }
-                p {
-                    class: "m-0",
-                    "TODO..."
-                }
+                // p {
+                //     class: "m-0",
+                //     "TODO..."
+                // }
                 div {
                     class: "m-0 flex gap-2",
                     { add_form }
+                }
+                // h3 {
+                //     class: "m-0 text-l font-bold",
+                //     "Pending updates"
+                // }
+                h3 {
+                    class: "m-0 text-l font-bold",
+                    "Current permissions" // "Identities and groups with access"
+                }
+                div {
+                    class: "m-0",
                 }
                 div {
                     class: "dialog-actions",
@@ -943,6 +979,36 @@ fn OverlayViewComponent(current_view: Signal<Option<OverlayView>>) -> Element {
                     }
                 }
             }
+        }
+        None => {
+            rsx! {
+                h2 {
+                    class: "m-0 text-xl font-bold",
+                    "Share cookbook"
+                }
+                p {
+                    class: "m-0",
+                    "Downloading..."
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn OverlayViewComponent(
+    current_view: Signal<Option<OverlayView>>,
+    state: Signal<State>,
+) -> Element {
+    let current_view_read = current_view.read();
+
+    if let Some(selected_view) = &*current_view_read {
+        let dview = match selected_view {
+            OverlayView::Share(cookbook_id) => rsx! { ShareCookbookOverlayView {
+                current_view,
+                state,
+                cookbook_id: *cookbook_id,
+            }},
         };
         rsx!{
             div {
