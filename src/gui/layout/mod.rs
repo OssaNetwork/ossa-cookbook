@@ -939,15 +939,20 @@ fn ShareCookbookOverlayView(
         return rsx!();
     };
     let cookbook_store_m = cookbook_store.get_current_store_state();
-    match cookbook_store_m.deref() {
-        Some(cookbook_store) => {
-        // if let Some(cookbook_store) = cookbook_store.get_current_store_state().deref() {
+    let title = cookbook_store_m.deref().as_ref().map_or("Share cookbook".to_string(), |cookbook_store|
+        format!("Share cookbook \"{}\"", cookbook_store.state().title.value())
+    );
+
+    let sc_cookbook_store_m = cookbook_store.get_current_store_sc_state();
+
+    match sc_cookbook_store_m.deref() {
+        Some(sc_cookbook_store) => {
             
             let (add_form, added_identity) = share_form();
             rsx! {
                 h2 {
                     class: "m-0 text-xl font-bold center",
-                    "Share cookbook \"{cookbook_store.state().title.value()}\""
+                    { title }
                 }
                 // p {
                 //     class: "m-0",
