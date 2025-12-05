@@ -62,6 +62,59 @@ pub fn TextField(props: TextFieldProps) -> Element {
     )
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum SelectOption<A> {
+    Option { title: String, value: A },
+    Separator,
+}
+
+#[component]
+pub fn SelectField<A: Clone + PartialEq + 'static>(
+    #[props(extends=GlobalAttributes)]
+    #[props(extends=select)]
+    attributes: Vec<Attribute>,
+    options: Vec<SelectOption<A>>,
+    value: Signal<A>,
+) -> Element {
+    // TODO: Set initial value.
+    let options_view = options.iter().enumerate().map(|(idx, option)| {
+        match option {
+            SelectOption::Option{ title, value } => {
+                rsx! {
+                    option {
+                        value: idx,
+                        { title.clone() }
+                    }
+                }
+            }
+            SelectOption::Separator => {
+                rsx! {
+                    option {
+                        disabled: true,
+                        value: idx,
+                        "─────"
+                    }
+                }
+            }
+        }
+    });
+    rsx! {
+        select {
+            // value: 0,
+            oninput: move |evt| {
+                let pos = evt.value().parse::<usize>().expect("Parsing values should never fail");
+                
+                if let SelectOption::Option {value: v, ..} = &options[pos] {
+                    value.set(v.clone());
+                };
+                // permissions.set(evt.value());
+            },
+            ..attributes,
+            { options_view }
+        }
+    }
+}
+
 fn is_disabled(attributes: &[Attribute]) -> bool {
     // println!("*** is_disabled ***");
     for attr in attributes {

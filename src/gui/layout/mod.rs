@@ -947,6 +947,53 @@ fn ShareCookbookOverlayView(
 
     match sc_cookbook_store_m.deref() {
         Some(sc_cookbook_store) => {
+            let group = sc_cookbook_store.state();
+            let tmp = match &group.public {
+                Some(role) => {
+                    format!("{role:?}")
+                }
+                None => {
+                    format!("None")
+                }
+            };
+
+            let groups = group.groups.iter().map(|group| {
+                // TODO: Look up user friendly names.
+                let name = format!("{}", group.0);
+                let tmp = format!("{:?}", group.1.permissions);
+
+                rsx!{
+                    div {
+                        class: "flex flex-row",
+                        div {
+                            class: "grow",
+                            {name}
+                        }
+                        div {
+                            {tmp}
+                        }
+                    }
+                }
+            });
+            
+            let users = group.members.iter().map(|user| {
+                // TODO: Look up user friendly names.
+                let name = format!("{}", user.0);
+                let tmp = format!("{:?}", user.1.permissions);
+
+                rsx!{
+                    div {
+                        class: "flex flex-row",
+                        div {
+                            class: "grow",
+                            {name}
+                        }
+                        div {
+                            {tmp}
+                        }
+                    }
+                }
+            });
             
             let (add_form, added_identity) = share_form();
             rsx! {
@@ -971,7 +1018,19 @@ fn ShareCookbookOverlayView(
                     "Current permissions" // "Identities and groups with access"
                 }
                 div {
-                    class: "m-0",
+                    class: "m-0 flex flex-col",
+                    { groups }
+                    { users }
+                    div {
+                        class: "flex flex-row",
+                        div {
+                            class: "grow",
+                            "Public"
+                        }
+                        div {
+                            {tmp}
+                        }
+                    }
                 }
                 div {
                     class: "dialog-actions",
