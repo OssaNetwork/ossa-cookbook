@@ -74,14 +74,17 @@ pub fn SelectField<A: Clone + PartialEq + 'static>(
     #[props(extends=select)]
     attributes: Vec<Attribute>,
     options: Vec<SelectOption<A>>,
-    value: Signal<A>,
+    value: Option<A>,
+    oninput: Option<EventHandler<(A, Event<FormData>)>>,
 ) -> Element {
-    // TODO: Set initial value.
     let options_view = options.iter().enumerate().map(|(idx, option)| {
         match option {
-            SelectOption::Option{ title, value } => {
+            SelectOption::Option{ title, value: v } => {
+                let is_selected = Some(v) == value.as_ref();
+
                 rsx! {
                     option {
+                        selected: is_selected,
                         value: idx,
                         { title.clone() }
                     }
@@ -100,14 +103,14 @@ pub fn SelectField<A: Clone + PartialEq + 'static>(
     });
     rsx! {
         select {
-            // value: 0,
             oninput: move |evt| {
                 let pos = evt.value().parse::<usize>().expect("Parsing values should never fail");
                 
                 if let SelectOption::Option {value: v, ..} = &options[pos] {
-                    value.set(v.clone());
+                    if let Some(oninput) = oninput {
+                        oninput.call((v.clone(), evt)); // JP: Is it possible to avoid this clone
+                    }
                 };
-                // permissions.set(evt.value());
             },
             ..attributes,
             { options_view }

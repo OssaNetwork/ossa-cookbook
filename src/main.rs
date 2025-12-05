@@ -1,6 +1,7 @@
 // #![feature(impl_trait_in_bindings)]
 // #![feature(unboxed_closures)]
 #![feature(map_try_insert)]
+#![feature(anonymous_lifetime_in_impl_trait)]
 
 use clap::Parser;
 use dioxus::core::current_scope_id;

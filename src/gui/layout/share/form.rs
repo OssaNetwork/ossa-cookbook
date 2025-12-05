@@ -15,7 +15,7 @@ fn validate_identity(input: &str) -> Result<(), &'static str> {
 
 pub fn share_form() -> (Element, ShareForm) {
     let mut identity = use_signal(|| "".into());
-    let permissions = use_signal(|| Role::Read);
+    let mut permissions = use_signal(|| Role::Read);
     let select_options = vec![
         SelectOption::Option {title: "Relay".into(), value: Role::Relay},
         SelectOption::Option {title: "Read".into(), value: Role::Read},
@@ -60,7 +60,13 @@ pub fn share_form() -> (Element, ShareForm) {
             class: "appearance-none bg-white bg-no-repeat bg-size-[16px_12px] bg-position-[right_0.75rem_center] border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body",
             style: "background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e\"); background-position: right .75rem center; background-size: 16px 12px; padding-inline-start: calc(0.75rem - 3px); padding: .4rem 2.25rem .4rem .75rem;",
             options: select_options,
-            value: permissions,
+            value: Role::Relay,
+            oninput: move |(role, _)| {
+                permissions.set(role);
+                // dbg!(permissions());
+            }
+            // oninput
+            // value: permissions,
         }
         // Select::<String> {
         //     placeholder: "Select a fruit...",
@@ -80,7 +86,7 @@ pub fn share_form() -> (Element, ShareForm) {
         //     }
         // }
         button { // JP: Move this outside the form?
-            class: "border rounded px-2",
+            class: "border rounded px-2 hover:bg-gray-100",
             onclick: |_evt| {
                 println!("TODO!");
             },

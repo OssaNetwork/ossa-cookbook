@@ -24,7 +24,7 @@ use ossa_dioxus::{new_store_in_scope, DefaultSetup, OssaProp, UseStore};
 use tracing::{debug, error, warn};
 
 use crate::components::alert_dialog::{AlertDialogAction, AlertDialogActions, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogRoot, AlertDialogTitle};
-use crate::gui::form::Button;
+use crate::gui::form::{Button, SelectField, SelectOption};
 use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_form};
 use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
@@ -927,6 +927,31 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
 }
 
 #[component]
+fn UpdateShareSelectView(
+    role: Option<Role>,
+) -> Element {
+    let options = vec![
+        SelectOption::Option {title: "Relay".into(), value: Some(Role::Relay)},
+        SelectOption::Option {title: "Read".into(), value: Some(Role::Read)},
+        SelectOption::Option {title: "Write".into(), value: Some(Role::Write)},
+        SelectOption::Option {title: "Admin".into(), value: Some(Role::Admin)},
+        SelectOption::Separator,
+        SelectOption::Option {title: "No access".into(), value: None},
+    ];
+    rsx! {
+        SelectField {
+            class: "appearance-none bg-white bg-no-repeat bg-size-[16px_12px] bg-position-[right_0.75rem_center] border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body",
+            style: "background-image: url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e\"); background-position: right .75rem center; background-size: 16px 12px; padding-inline-start: calc(0.75rem - 3px); padding: .4rem 2.25rem .4rem .75rem;",
+            options,
+            value: role,
+            oninput: move |(role, _)| {
+                println!("TODO: Set role: {role:?}");
+            },
+        }
+    }
+}
+
+#[component]
 fn ShareCookbookOverlayView(
     current_view: Signal<Option<OverlayView>>,
     state: Signal<State>,
@@ -960,17 +985,18 @@ fn ShareCookbookOverlayView(
             let groups = group.groups.iter().map(|group| {
                 // TODO: Look up user friendly names.
                 let name = format!("{}", group.0);
-                let tmp = format!("{:?}", group.1.permissions);
 
                 rsx!{
                     div {
-                        class: "flex flex-row",
+                        class: "flex flex-row items-center",
                         div {
-                            class: "grow",
+                            class: "grow text-ellipsis overflow-hidden",
                             {name}
                         }
                         div {
-                            {tmp}
+                            UpdateShareSelectView {
+                                role: group.1.permissions
+                            }
                         }
                     }
                 }
@@ -979,17 +1005,18 @@ fn ShareCookbookOverlayView(
             let users = group.members.iter().map(|user| {
                 // TODO: Look up user friendly names.
                 let name = format!("{}", user.0);
-                let tmp = format!("{:?}", user.1.permissions);
 
                 rsx!{
                     div {
-                        class: "flex flex-row",
+                        class: "flex flex-row items-center",
                         div {
-                            class: "grow",
+                            class: "grow text-ellipsis overflow-hidden",
                             {name}
                         }
                         div {
-                            {tmp}
+                            UpdateShareSelectView {
+                                role: user.1.permissions
+                            }
                         }
                     }
                 }
@@ -1018,17 +1045,19 @@ fn ShareCookbookOverlayView(
                     "Current permissions" // "Identities and groups with access"
                 }
                 div {
-                    class: "m-0 flex flex-col",
+                    class: "m-0 flex flex-col gap-2",
                     { groups }
                     { users }
                     div {
-                        class: "flex flex-row",
+                        class: "flex flex-row items-center",
                         div {
-                            class: "grow",
+                            class: "grow text-ellipsis overflow-hidden",
                             "Public"
                         }
                         div {
-                            {tmp}
+                            UpdateShareSelectView {
+                                role: group.public,
+                            }
                         }
                     }
                 }
