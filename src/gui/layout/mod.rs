@@ -973,14 +973,6 @@ fn ShareCookbookOverlayView(
     match sc_cookbook_store_m.deref() {
         Some(sc_cookbook_store) => {
             let group = sc_cookbook_store.state();
-            let tmp = match &group.public {
-                Some(role) => {
-                    format!("{role:?}")
-                }
-                None => {
-                    format!("None")
-                }
-            };
 
             let groups = group.groups.iter().map(|group| {
                 // TODO: Look up user friendly names.
@@ -1025,7 +1017,7 @@ fn ShareCookbookOverlayView(
             let (add_form, added_identity) = share_form();
             rsx! {
                 h2 {
-                    class: "m-0 text-xl font-bold center",
+                    class: "m-0 text-xl font-bold center max-sm:text-left",
                     { title }
                 }
                 // p {

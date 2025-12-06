@@ -96,7 +96,7 @@ body {
   border: 1px solid;
   border-radius: 0.5rem;
   font-size: 1rem;
-  @apply border-gray-100 bg-gray-100 hover:bg-gray-200;
+  @apply border-gray-100 bg-gray-100 hover:border-gray-200 hover:bg-gray-200;
 }
 
 .dialog-actions {
@@ -128,7 +128,7 @@ body {
     Arial, sans-serif;
   */
   gap: 16px;
-  text-align: center;
+  text-align: left;
   transform: translate(-50%, -50%);
 }
 
@@ -140,7 +140,6 @@ body {
 
   .dialog-content {
     max-width: 32rem;
-    text-align: left;
   }
 }
 
