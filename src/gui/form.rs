@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use dioxus::{core::AttributeValue, prelude::*};
 
 #[derive(Props, Clone, PartialEq)]
@@ -21,39 +23,63 @@ pub fn FieldLabel(props: FieldLabelProps) -> Element {
     )
 }
 
-#[derive(PartialEq, Props, Clone)]
-pub struct TextFieldProps {
-    id: String,
+// #[derive(PartialEq, Props, Clone)]
+// pub struct TextFieldProps {
+//     id: String,
+//     class: Option<String>,
+//     placeholder: String,
+//     value: String,
+//     oninput: EventHandler<Event<FormData>>,
+//     onkeyup: Option<EventHandler<Event<KeyboardData>>>,
+//     validation_fn: for<'b> fn(&'b str) -> Result<(), &'static str>,
+// }
+
+#[component]
+pub fn TextField<A: Clone + ToString + 'static>(
+    #[props(extends=GlobalAttributes)]
+    #[props(extends=input)]
+    attributes: Vec<Attribute>,
     class: Option<String>,
     placeholder: String,
-    value: String,
-    oninput: EventHandler<Event<FormData>>,
+    value: Signal<Result<A, &'static str>>,
+    // value: Option<A>,
+    oninput: Option<EventHandler<Event<FormData>>>,
     onkeyup: Option<EventHandler<Event<KeyboardData>>>,
-    validation_fn: for<'b> fn(&'b str) -> Result<(), &'static str>,
-}
+    // parse_fn: for<'b> fn(&'b str) -> Result<A, &'static str>,
+    parse_fn: fn(String) -> Result<A, &'static str>,
 
-pub fn TextField(props: TextFieldProps) -> Element {
-    let mut is_modified = use_signal(|| false);
-    let err: Result<(), &'static str> = if *is_modified.peek() {
-        (props.validation_fn)(&props.value)
-    } else {
-        Ok(())
-    };
+    // options: Vec<SelectOption<A>>,
+    // value: Option<A>,
+    // oninput: Option<EventHandler<(A, Event<FormData>)>>,
+) -> Element {
+    // let mut is_modified = use_signal(|| false);
+    // let err: Result<(), &'static str> = if *is_modified.peek() {
+    //     (props.validation_fn)(&props.value)
+    // } else {
+    //     Ok(())
+    // };
 
     rsx! (
         input {
-            class: format_args!("{} appearance-none border rounded py-1 px-2 {}", props.class.unwrap_or("".to_string()), if err.is_err() {"border-red-500"} else {""}),
-            r#id: props.id,
+            class: format_args!("{} appearance-none border rounded py-1 px-2 {}", class.unwrap_or("".to_string()), if value.peek().is_err() {"border-red-500"} else {""}),
+            // r#id: props.id,
             r#type: "text",
-            placeholder: props.placeholder,
+            value: value.peek().deref().as_ref().map_or("".to_string(), |v| v.to_string()),
+            placeholder: placeholder,
             oninput: move |evt| {
-                is_modified.set(true);
-                props.oninput.call(evt);
+                let current = parse_fn(evt.value());
+                value.set(current.clone());
+                if let Some(f) = oninput {
+                    f(evt)
+                };
             },
-            onkeyup: move |evt| props.onkeyup.as_ref().map_or((), |f| f.call(evt)),
-            value: "{props.value}"
+            onkeyup: move |evt| onkeyup.as_ref().map_or((), |f| {
+                f.call(evt)
+            }),
+            // value: "{value}"
+            ..attributes,
         }
-        { err.err().map(|e| rsx!(
+        { value.peek().as_ref().err().map(|e| rsx!(
             p {
                 class: format_args!("text-red-500 text-sm"),
                 "{e}"
@@ -108,7 +134,7 @@ pub fn SelectField<A: Clone + PartialEq + 'static>(
                 
                 if let SelectOption::Option {value: v, ..} = &options[pos] {
                     if let Some(oninput) = oninput {
-                        oninput.call((v.clone(), evt)); // JP: Is it possible to avoid this clone
+                        oninput.call((v.clone(), evt)); // JP: Is it possible to avoid this clone?
                     }
                 };
             },

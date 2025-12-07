@@ -23,11 +23,11 @@ pub fn valid_recipe_form(recipe_form: &RecipeForm) -> bool {
     !is_err
 }
 
-pub fn validate_name(name: &str) -> Result<(), &'static str> {
+pub fn validate_name(name: String) -> Result<String, &'static str> {
     if name.len() == 0 {
         Err("Please enter a name.")
     } else {
-        Ok(())
+        Ok(name)
     }
 }
 
@@ -49,7 +49,7 @@ pub fn validate_instructions(instructions: &str) -> Result<(), &'static str> {
 
 pub fn recipe_form(initial_recipe: Option<&Recipe>) -> (Element, RecipeForm) {
     let mut name =
-        use_signal(|| initial_recipe.map_or("".to_string(), |x| x.title.value().clone()));
+        use_signal(|| Ok(initial_recipe.map_or("".to_string(), |x| x.title.value().clone())));
 
     let mut ingredients =
         use_signal(|| initial_recipe.map_or(vec![], |x| x.ingredients.value().clone()));
@@ -81,8 +81,8 @@ pub fn recipe_form(initial_recipe: Option<&Recipe>) -> (Element, RecipeForm) {
                         placeholder: "Recipe name",
                         id: "recipename",
                         value: name,
-                        oninput: move |evt: Event<FormData>| name.set(evt.value()),
-                        validation_fn: validate_name,
+                        // oninput: move |evt: Event<FormData>| name.set(evt.value()),
+                        parse_fn: validate_name,
                     })
                 }
                 // div {
