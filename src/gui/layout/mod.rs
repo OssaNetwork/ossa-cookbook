@@ -12,7 +12,7 @@ use dioxus_heroicons::{solid::Shape, Icon};
 use dioxus_markdown::Markdown;
 // TODO: Fix outline icons.
 
-use ossa_core::auth::group::{Group, Role};
+use ossa_core::auth::group::{Group, GroupOp, Role};
 use ossa_core::auth::Permissions;
 use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::dag::v0::OperationId;
@@ -29,7 +29,7 @@ use crate::gui::form::{Button, SelectField, SelectOption};
 use crate::gui::layout::cookbook::form::{new_cookbook_form, valid_new_cookbook_form};
 use crate::gui::layout::login::LoginView;
 use crate::gui::layout::recipe::form::{recipe_form, valid_recipe_form};
-use crate::gui::layout::share::form::share_form;
+use crate::gui::layout::share::form::{ShareForm, ShareFormData};
 use crate::state::{Cookbook, CookbookId, CookbookOp, Recipe, RecipeId, RecipeOp, State};
 
 const RECIPE_ICON: Asset = asset!("/img/recipe_icon.svg");
@@ -971,6 +971,7 @@ fn ShareCookbookOverlayView(
         current_view.set(None);
         return rsx!();
     };
+    let cookbook_store2 = cookbook_store.clone();
     let cookbook_store_m = cookbook_store.get_current_store_ec_state();
     let title = cookbook_store_m.deref().as_ref().map_or("Share cookbook".to_string(), |cookbook_store|
         format!("Share cookbook \"{}\"", cookbook_store.state().title.value())
@@ -1024,7 +1025,6 @@ fn ShareCookbookOverlayView(
                 }
             });
             
-            let (add_form, added_identity) = share_form();
             rsx! {
                 h2 {
                     class: "m-0 text-xl font-bold center max-sm:text-left",
@@ -1036,7 +1036,21 @@ fn ShareCookbookOverlayView(
                 // }
                 div {
                     class: "m-0 flex gap-2",
-                    { add_form }
+                    ShareForm {
+                        onclick: move |(data, _evt): (ShareFormData, Event<MouseData>)| {
+                            // TODO: For now, assuming its a user/identity.
+                            warn!("TODO: Handle groups too");
+                            warn!("TODO: Get round...");
+
+                            let round = 0;
+                            let op = GroupOp::SetMemberAccess {
+                                member: data.identity,
+                                permissions: Some(data.permissions),
+                                round,
+                            };
+                            cookbook_store2.propose_sc_update(op) // JP: Can we avoid this clone?
+                        },
+                    }
                 }
                 // h3 {
                 //     class: "m-0 text-l font-bold",
