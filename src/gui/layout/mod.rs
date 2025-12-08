@@ -18,6 +18,7 @@ use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::dag::v0::OperationId;
 use ossa_core::store::StoreRef;
 use ossa_core::time::CausalTime;
+use ossa_core::util::Sha256Hash;
 use ossa_crdt::map::twopmap::{TwoPMap, TwoPMapOp};
 use ossa_crdt::register::LWW;
 use ossa_dioxus::{new_store_in_scope, DefaultSetup, OssaProp, UseStore};
@@ -887,7 +888,14 @@ fn ConnectToStoreView(view: SignalView, state: Signal<State>, root_scope: ScopeI
     use crate::gui::form::TextField;
 
     pub fn validate_store_id(store_id: &str) -> Result<(), &'static str> {
-        Ok(())
+        match store_id.parse::<Sha256Hash>() {
+            Ok(_) => {
+                Ok(())
+            }
+            Err(_) => {
+                Err("Invalid store id")
+            }
+        }
     }
 
     let mut store_id = use_signal(|| "".to_string());
@@ -963,7 +971,7 @@ fn ShareCookbookOverlayView(
         current_view.set(None);
         return rsx!();
     };
-    let cookbook_store_m = cookbook_store.get_current_store_state();
+    let cookbook_store_m = cookbook_store.get_current_store_ec_state();
     let title = cookbook_store_m.deref().as_ref().map_or("Share cookbook".to_string(), |cookbook_store|
         format!("Share cookbook \"{}\"", cookbook_store.state().title.value())
     );
@@ -972,6 +980,8 @@ fn ShareCookbookOverlayView(
 
     match sc_cookbook_store_m.deref() {
         Some(sc_cookbook_store) => {
+            // TODO: Check if we have admin permission.
+
             let group = sc_cookbook_store.state();
 
             let groups = group.groups.iter().map(|group| {

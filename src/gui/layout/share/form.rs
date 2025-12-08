@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_primitives::select::{Select, SelectGroup, SelectList, SelectOption, SelectTrigger, SelectValue};
-use ossa_core::auth::group::Role;
+use ossa_core::{auth::group::Role, util::Sha256Hash};
 
 use crate::gui::form::{SelectField, SelectOption, TextField};
 
@@ -9,8 +9,17 @@ pub struct ShareForm {
     pub permissions: Signal<Role>,
 }
 
+// TODO: Handle when value isn't valid (Prevent submission..).
 fn validate_identity(input: &str) -> Result<(), &'static str> {
-    Ok(())
+    // TODO: Accept user friendly display names.
+    match input.parse::<Sha256Hash>() {
+        Ok(_) => {
+            Ok(())
+        }
+        Err(_) => {
+            Err("Invalid identity")
+        }
+    }
 }
 
 pub fn share_form() -> (Element, ShareForm) {
