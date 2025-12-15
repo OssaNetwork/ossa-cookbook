@@ -175,7 +175,7 @@ pub fn layout(
                         dialog_view.set(Some(OverlayView::Share(selected_cookbook_id)));
                     },
                     Icon {
-                        class: "", // w-14 h-14",
+                        class: "w-[24px] h-[24px]", // w-14 h-14",
                         icon: Shape::UserPlus, // Shape::Users, // Shape::UserGroup,
                     }
                     span {
@@ -184,10 +184,13 @@ pub fn layout(
                     }
                 }
                 div {
-                    class: "flex-none inline-flex aspect-square w-32px h-32px rounded-full shrink-0 grow-0 border items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
-                    Icon {
-                        class: "", // w-14 h-14",
-                        icon: Shape::User,
+                    // class: "flex-none inline-flex aspect-square w-32px h-32px rounded-full shrink-0 grow-0 border items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
+                    span {
+                        class: "inline-block aspect-square shrink-0 grow-0 flex-none inline-flex  border items-center justify-center p-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 overflow-hidden rounded-full ", // bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10",
+                        Icon {
+                            class: "w-[24px] h-[24px]", // w-14 h-14",
+                            icon: Shape::User,
+                        }
                     }
                 }
             }
@@ -1048,7 +1051,7 @@ fn ShareCookbookOverlayView(
                                 permissions: Some(data.permissions),
                                 round,
                             };
-                            cookbook_store2.propose_sc_update(op) // JP: Can we avoid this clone?
+                            cookbook_store2.propose_sc_update(op); // JP: Can we avoid this clone?
                         },
                     }
                 }
