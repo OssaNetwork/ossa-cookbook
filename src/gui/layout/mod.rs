@@ -190,6 +190,7 @@ pub fn layout(
                             }
                         });
 
+                        identity_menu_visible.set(false);
                         e.stop_propagation();
                     },
                     Icon {
@@ -206,6 +207,8 @@ pub fn layout(
                         class: "inline-block aspect-square shrink-0 grow-0 flex-none inline-flex  border items-center justify-center p-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 overflow-hidden rounded-full", // bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10",
                         onclick: move |e| {
                             identity_menu_visible.toggle();
+
+                            dialog_view.set(None);
                             e.stop_propagation();
                         },
                         Icon {
