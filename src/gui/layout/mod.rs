@@ -168,16 +168,29 @@ pub fn layout(
             class: "wrapper",
             onclick: move |_e| {
                 // JP: Is this high enough in the document?
+                // Close identity menu when something else is clicked.
                 identity_menu_visible.set(false);
+
+                // Close overlay view when something else is clicked.
+                dialog_view.set(None);
+
             },
             nav {
                 class: "menubar drag",
                 Button {
                     disabled: selected_cookbook_id_m.is_none(),
                     class: "flex-none ml-auto inline-flex items-center h-32px rounded-full shrink-0 grow-0 border justify-center px-4 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 disabled:opacity-0",
-                    onclick: move |_e| {
+                    onclick: move |e: Event<MouseData>| {
                         let selected_cookbook_id = selected_cookbook_id_m.expect("Invariant violated: Cookbook must be selected.");
-                        dialog_view.set(Some(OverlayView::Share(selected_cookbook_id)));
+                        dialog_view.with_mut(|c| {
+                            *c = if c.is_some() {
+                                None
+                            } else {
+                                Some(OverlayView::Share(selected_cookbook_id))
+                            }
+                        });
+
+                        e.stop_propagation();
                     },
                     Icon {
                         class: "w-[24px] h-[24px]", // w-14 h-14",
@@ -189,7 +202,6 @@ pub fn layout(
                     }
                 }
                 div {
-                    // class: "flex-none inline-flex aspect-square w-32px h-32px rounded-full shrink-0 grow-0 border items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
                     span {
                         class: "inline-block aspect-square shrink-0 grow-0 flex-none inline-flex  border items-center justify-center p-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 overflow-hidden rounded-full", // bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10",
                         onclick: move |e| {
@@ -1178,9 +1190,6 @@ fn OverlayViewComponent(
         rsx!{
             div {
                 class: "dialog-overlay",
-                onclick: move |_| {
-                    current_view.set(None);
-                },
                 div {
                     class: "dialog-content",
                     onclick: move |e| {
