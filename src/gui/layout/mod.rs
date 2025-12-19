@@ -160,6 +160,7 @@ pub fn layout(
     };
 
     let mut dialog_view: Signal<Option<OverlayView>> = use_signal(|| None);
+    let mut identity_menu_visible: Signal<bool> = use_signal(|| false);
     // let mut open = use_signal(|| true);
     let selected_cookbook_id_m = is_any_cookbook_selected(v);
     rsx!(
@@ -186,10 +187,60 @@ pub fn layout(
                 div {
                     // class: "flex-none inline-flex aspect-square w-32px h-32px rounded-full shrink-0 grow-0 border items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50",
                     span {
-                        class: "inline-block aspect-square shrink-0 grow-0 flex-none inline-flex  border items-center justify-center p-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 overflow-hidden rounded-full ", // bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10",
+                        class: "inline-block aspect-square shrink-0 grow-0 flex-none inline-flex  border items-center justify-center p-3 text-gray-600 hover:text-gray-800 font-bold bg-white hover:bg-gray-50 overflow-hidden rounded-full", // bg-gray-100 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10",
+                        onclick: move |_e| {
+                            identity_menu_visible.toggle();
+                        },
                         Icon {
                             class: "w-[24px] h-[24px]", // w-14 h-14",
                             icon: Shape::User,
+                        }
+                    }
+                    // TODO: Make a component for this.
+                    if identity_menu_visible() {
+                        div {
+                            class: "z-[9] top-0 left-0 absolute w-full h-full",
+                            onclick: move |_| {
+                                identity_menu_visible.set(false);
+                            },
+                            el-menu {
+                                anchor: "bottom end",
+                                popover: true,
+                                class: "z-[10] absolute right-[16px] top-[60px] w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg border border-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in", // dark:divide-white/10 dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10",
+                                div {
+                                    class: "px-4 py-3",
+                                    p {
+                                        class: "text-sm text-gray-700 dark:text-gray-400",
+                                        // "Signed in as"
+                                        "Current identity"
+                                    }
+                                    p {
+                                        class: "truncate text-sm font-medium text-gray-900 dark:text-white",
+                                        "tom" // @example.com"
+                                    }
+                                }
+                                div {
+                                    class: "py-1",
+                                    a {
+                                        // href: "#",
+                                        class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900", // hover:outline-hidden", //  dark:text-gray-300 dark:focus:bg-white/5 dark:focus:text-white",
+                                        "Identity settings" // "Account settings"
+                                    }
+                                    a {
+                                        // href: "#",
+                                        class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900", // hover:outline-hidden", //  dark:text-gray-300 dark:focus:bg-white/5 dark:focus:text-white",
+                                        "Contacts"
+                                    }
+                                }
+                                div {
+                                    class: "py-1",
+                                    a {
+                                        // href: "#",
+                                        class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900", // hover:outline-hidden", //  dark:text-gray-300 dark:focus:bg-white/5 dark:focus:text-white",
+                                        "Sign out"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
