@@ -14,7 +14,7 @@ use futures::StreamExt;
 use ossa_core::auth::group::{Group, Role};
 use ossa_core::auth::identity::Identity;
 use ossa_core::auth::Permissions;
-use ossa_core::protocol::store_peer::ecg_sync;
+use ossa_core::protocol::store_peer::dag_sync;
 use ossa_core::storage::memory::MemoryStorage;
 use ossa_core::store::dag::v0::{Body, Header, HeaderId, OperationId};
 use ossa_core::store::dag::{self, DAGBody, DAGHeader};
@@ -39,7 +39,6 @@ use crate::gui::layout::SignalView;
 use crate::state::*;
 
 mod cli;
-mod components;
 mod gui;
 mod state;
 
