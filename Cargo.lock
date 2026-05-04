@@ -871,6 +871,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "convert_case"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "633458d4ef8c78b72454de2d54fd6ab2e60f9e02be22f3c6104cdc8a4e0fceb9"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "cookie"
 version = "0.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1201,11 +1210,11 @@ dependencies = [
 
 [[package]]
 name = "derive_more"
-version = "2.0.1"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "093242cf7570c207c83073cf82f79706fe7b8317e98620a47d5be7c3d8497678"
+checksum = "d751e9e49156b02b44f9c1815bcb94b984cdcc4396ecc32521c739452808b134"
 dependencies = [
- "derive_more-impl 2.0.1",
+ "derive_more-impl 2.1.1",
 ]
 
 [[package]]
@@ -1222,12 +1231,14 @@ dependencies = [
 
 [[package]]
 name = "derive_more-impl"
-version = "2.0.1"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bda628edc44c4bb645fbe0f758797143e4e07926f7ebf4e9bdfbd3d2ce621df3"
+checksum = "799a97264921d8623a957f6c3b9011f3b5492f557bbb7a5a19b7fa6d06ba8dcb"
 dependencies = [
+ "convert_case 0.10.0",
  "proc-macro2",
  "quote",
+ "rustc_version",
  "syn 2.0.104",
  "unicode-xid",
 ]
@@ -3698,7 +3709,7 @@ dependencies = [
  "atomic-waker",
  "bytes",
  "cfg_aliases",
- "derive_more 2.0.1",
+ "derive_more 2.1.1",
  "iroh-quinn-udp",
  "js-sys",
  "libc",
@@ -3789,7 +3800,7 @@ version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77e878c846a8abae00dd069496dbe8751b16ac1c3d6bd2a7283a938e8228f90d"
 dependencies = [
- "proc-macro-crate 2.0.0",
+ "proc-macro-crate 3.3.0",
  "proc-macro2",
  "quote",
  "syn 2.0.104",
@@ -4130,6 +4141,7 @@ name = "ossa-cookbook"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "derive_more 2.1.1",
  "dioxus",
  "dioxus-desktop",
  "dioxus-heroicons",
@@ -4153,7 +4165,7 @@ dependencies = [
 [[package]]
 name = "ossa-core"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=f809646def4a8c7cd1f0adb01d6bca9e6e970d58#f809646def4a8c7cd1f0adb01d6bca9e6e970d58"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
 dependencies = [
  "async-recursion",
  "async-session-types",
@@ -4183,17 +4195,30 @@ dependencies = [
 [[package]]
 name = "ossa-crdt"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=f809646def4a8c7cd1f0adb01d6bca9e6e970d58#f809646def4a8c7cd1f0adb01d6bca9e6e970d58"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
 dependencies = [
  "im",
+ "ossa-crdt-derive",
  "ossa-typeable",
  "serde",
+ "void",
+]
+
+[[package]]
+name = "ossa-crdt-derive"
+version = "0.1.0"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
+dependencies = [
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.104",
 ]
 
 [[package]]
 name = "ossa-dioxus"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=f809646def4a8c7cd1f0adb01d6bca9e6e970d58#f809646def4a8c7cd1f0adb01d6bca9e6e970d58"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
 dependencies = [
  "dioxus",
  "dioxus-desktop",
@@ -4205,7 +4230,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=f809646def4a8c7cd1f0adb01d6bca9e6e970d58#f809646def4a8c7cd1f0adb01d6bca9e6e970d58"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
 dependencies = [
  "im",
  "lazy_static",
@@ -4217,7 +4242,7 @@ dependencies = [
 [[package]]
 name = "ossa-typeable-derive"
 version = "0.0.1"
-source = "git+https://github.com/jprider63/ossa.git?rev=f809646def4a8c7cd1f0adb01d6bca9e6e970d58#f809646def4a8c7cd1f0adb01d6bca9e6e970d58"
+source = "git+https://github.com/jprider63/ossa.git?rev=bdd89b3925279f44884969032bcbb1eeb902c1c5#bdd89b3925279f44884969032bcbb1eeb902c1c5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4554,7 +4579,7 @@ source = "git+https://github.com/jprider63/net-tools.git?rev=e84c5ae9dd97d88d06f
 dependencies = [
  "base64 0.22.1",
  "bytes",
- "derive_more 2.0.1",
+ "derive_more 2.1.1",
  "futures-lite",
  "futures-util",
  "hyper-util",
@@ -6768,6 +6793,14 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "void"
+version = "1.0.4"
+source = "git+https://github.com/jprider63/rust-void.git#8ed477c05c80a2104a01389caa1033cb3c6f15ca"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "vswhom"

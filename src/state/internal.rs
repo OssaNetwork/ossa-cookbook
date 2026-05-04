@@ -1,3 +1,4 @@
+use derive_more::Debug;
 use ossa_core::store::ecg::v0::{HeaderId, OperationId};
 use ossa_core::time::{CausalTime, ConcretizeTime};
 use ossa_core::util::Sha256Hash;
@@ -12,7 +13,9 @@ pub type Time = OperationId<HeaderId<Sha256Hash>>;
 
 // pub struct RecipeId(Time); // TODO: Newtype wrap this. JP: How do we get this newtype wrapper to work? `Into` instance?
 pub type RecipeId<Time> = Time;
-#[derive(Clone, Debug, PartialEq, Typeable, Serialize, Deserialize)]
+#[derive(Clone, CRDT, Debug, PartialEq, Typeable, Serialize, Deserialize)]
+#[crdt(bound = "Time: Ord", time = Time, concretize_time, concretize_time_op)]
+#[crdt(bound_concretize_time = "Time::Serialized: Ord")]
 pub struct Recipe<Time> {
     pub title: LWW<Time, String>,
     pub ingredients: LWW<Time, Vec<String>>, // Sequence<String>,
@@ -20,126 +23,15 @@ pub struct Recipe<Time> {
                                              // pub image: Sequence<OssaRef<Image>>, // Sequence?
 }
 
-// TODO: Define the CBOR for this properly
-// TODO: Derive this automatically. (use `heck` for case conversion) XXX
-#[derive(Debug, Serialize, Deserialize)]
-pub enum RecipeOp<Time> {
-    Title(LWW<Time, String>),
-    Ingredients(LWW<Time, Vec<String>>),
-    Instructions(LWW<Time, String>),
-    // Title(<LWW<Time, String> as CRDT>::Op<Time>),
-    // Ingredients(<LWW<Time, Vec<String>> as CRDT>::Op<Time>),
-    // Instructions(<LWW<Time, String> as CRDT>::Op<Time>),
-}
-
-// TODO: Derive this automatically. (use `heck` for case conversion) XXX
-impl<Time: Ord> CRDT for Recipe<Time> {
-    type Op = RecipeOp<Time>;
-    type Time = Time;
-
-    fn apply<CS: CausalState<Time = Self::Time>>(self, st: &CS, op: Self::Op) -> Self {
-        match op {
-            RecipeOp::Title(t) => Recipe {
-                title: self.title.apply(st, t),
-                ..self
-            },
-            RecipeOp::Ingredients(i) => Recipe {
-                ingredients: self.ingredients.apply(st, i),
-                ..self
-            },
-            RecipeOp::Instructions(i) => Recipe {
-                instructions: self.instructions.apply(st, i),
-                ..self
-            },
-        }
-    }
-}
-
 pub type CookbookId = usize; // TODO: Newtype wrap this.
-#[derive(Clone, Debug, Deserialize, Serialize, Typeable)]
-pub struct Cookbook<Time: Clone + Ord> {
+#[derive(Clone, CRDT, Debug, Deserialize, Serialize, Typeable)]
+#[crdt(bound = "Time: Clone + Ord", time = Time, concretize_time_op)]
+#[crdt(bound_concretize_time = "Time::Serialized: Clone + Ord")]
+#[crdt(bound_concretize_time = "__HeaderId: Clone")]
+#[serde(bound = "Time: Clone + Ord + Serialize + for <'d> Deserialize<'d>")]
+pub struct Cookbook<Time> { // : Clone + Ord> {
     pub title: LWW<Time, String>,
     pub recipes: TwoPMap<RecipeId<Time>, Recipe<Time>>,
-}
-
-// TODO: Define the CBOR for this properly
-// TODO: Derive this automatically. (use `heck` for case conversion) XXX
-#[derive(Debug, Serialize, Deserialize)]
-pub enum CookbookOp<Time> {
-    Title(LWW<Time, String>),
-    Recipes(TwoPMapOp<RecipeId<Time>, Recipe<Time>, RecipeOp<Time>>),
-    // Title(<LWW<Time, String> as CRDT>::Op<Time>),
-    // Recipes(<TwoPMap<RecipeId, Recipe> as CRDT>::Op<Time>),
-}
-
-impl<HeaderId: Clone, Time: ConcretizeTime<HeaderId, Serialized = CausalTime<Time>>>
-    ConcretizeTime<HeaderId> for Recipe<Time>
-{
-    type Serialized = Recipe<CausalTime<Time>>;
-
-    fn concretize_time(src: Self::Serialized, current_header: HeaderId) -> Self {
-        Recipe {
-            title: LWW::concretize_time(src.title, current_header.clone()),
-            ingredients: LWW::concretize_time(src.ingredients, current_header.clone()),
-            instructions: LWW::concretize_time(src.instructions, current_header.clone()),
-        }
-    }
-}
-
-impl<HeaderId, Time: ConcretizeTime<HeaderId, Serialized = CausalTime<Time>>>
-    ConcretizeTime<HeaderId> for RecipeOp<Time>
-{
-    type Serialized = RecipeOp<CausalTime<Time>>;
-
-    fn concretize_time(src: Self::Serialized, current_header: HeaderId) -> Self {
-        match src {
-            RecipeOp::Title(lww) => RecipeOp::Title(LWW::concretize_time(lww, current_header)),
-            RecipeOp::Ingredients(lww) => {
-                RecipeOp::Ingredients(LWW::concretize_time(lww, current_header))
-            }
-            RecipeOp::Instructions(lww) => {
-                RecipeOp::Instructions(LWW::concretize_time(lww, current_header))
-            }
-        }
-    }
-}
-
-impl<HeaderId: Clone, Time: ConcretizeTime<HeaderId, Serialized = CausalTime<Time>>>
-    ConcretizeTime<HeaderId> for CookbookOp<Time>
-{
-    type Serialized = CookbookOp<CausalTime<Time>>;
-
-    fn concretize_time(src: Self::Serialized, current_time: HeaderId) -> Self {
-        match src {
-            CookbookOp::Title(lww) => CookbookOp::Title(<LWW<Time, String> as ConcretizeTime<
-                HeaderId,
-            >>::concretize_time(
-                lww, current_time
-            )),
-            CookbookOp::Recipes(two_pmap_op) => {
-                CookbookOp::Recipes(TwoPMapOp::concretize_time(two_pmap_op, current_time))
-            }
-        }
-    }
-}
-
-// TODO: Derive this automatically. (use `heck` for case conversion) XXX
-impl<Time: Ord + Clone> CRDT for Cookbook<Time> {
-    type Op = CookbookOp<Time>;
-    type Time = Time;
-
-    fn apply<CS: CausalState<Time = Self::Time>>(self, st: &CS, op: Self::Op) -> Self {
-        match op {
-            CookbookOp::Title(t) => Cookbook {
-                title: self.title.apply(st, t),
-                ..self
-            },
-            CookbookOp::Recipes(rs) => Cookbook {
-                recipes: self.recipes.apply(st, rs),
-                ..self
-            },
-        }
-    }
 }
 
 pub type State = Vec<UseStore<DefaultSetup, Cookbook<Time>>>;
